@@ -7,18 +7,18 @@ import time
 
 st.set_page_config(page_title="US Market Scanner - Anti-Block Engine", layout="wide")
 
-st.title("📈 Scanner USA - RSI & Trend Calibrato (Bypass Anti-Block)")
-st.caption("Engine avanzato con gestione Cookie/Crumb, User-Agent rotanti e scaricamento a blocchi sicuri.")
+st.title("📈 Scanner USA - RSI & Trend Calibrato")
+st.caption("Engine ottimizzato compatibile con Python 3.14.")
 
 @st.cache_data(ttl=14400)
 def get_sp500_tickers_with_names():
     """
-    Recupera i ticker dell'S&P 500 direttamente da Wikipedia (fonte affidabile non bloccata).
+    Recupera i ticker dell'S&P 500 direttamente da Wikipedia.
     """
     ticker_name_map = {}
     try:
         url_sp500 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'}
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
         req = requests.get(url_sp500, headers=headers, timeout=10)
         tables = pd.read_html(req.text)
         df_sp = tables[0]
@@ -27,7 +27,6 @@ def get_sp500_tickers_with_names():
             name = str(row['Security'])
             ticker_name_map[sym] = name
     except Exception:
-        # Fallback solido di sicurezza se Wikipedia dovesse fallire
         ticker_name_map = {
             "AAPL": "Apple Inc.", "MSFT": "Microsoft Corporation", "GOOGL": "Alphabet Inc.",
             "AMZN": "Amazon.com Inc.", "NVDA": "NVIDIA Corporation", "TSLA": "Tesla Inc.",
@@ -39,7 +38,7 @@ def get_sp500_tickers_with_names():
     return ticker_name_map
 
 def calculate_rsi(series, period=14):
-    """ Formula ufficiale Wilder's RMA (Coincidente con eToro / TradingView) """
+    """ Formula ufficiale Wilder's RMA """
     delta = series.diff()
     gain = delta.where(delta > 0, 0.0)
     loss = -delta.where(delta < 0, 0.0)
@@ -85,34 +84,26 @@ def fetch_filtered_market(show_all_rsi=False):
     ticker_map = get_sp500_tickers_with_names()
     tickers = list(ticker_map.keys())
     
-    # CHUNKING SICURO: Blocchi piccolissimi da 30 ticker per evitare il rate-limiting di Yahoo
-    chunk_size = 30
+    chunk_size = 50
     results = []
     
     progress_bar = st.progress(0)
     status_text = st.empty()
     total_chunks = max(1, (len(tickers) // chunk_size) + 1)
 
-    # Configurazione della sessione HTTP per imitare un browser reale
-    session = requests.Session()
-    session.headers.update({
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-    })
-
     for idx, i in enumerate(range(0, len(tickers), chunk_size)):
         chunk = tickers[i:i+chunk_size]
-        status_text.text(f"Scansione sicura in corso... Blocco {idx+1} di {total_chunks} ({len(results)} asset trovati)")
+        status_text.text(f"Scansione sicura in corso... Blocco {idx+1} di {total_chunks}")
         
         try:
-            # Scarichiamo il blocco tramite la sessione camuffata
+            # threads=False risolve il crash del threading su Python 3.14 / Streamlit
             data = yf.download(
                 chunk,
                 period="1y",
                 interval="1d",
                 group_by='ticker',
-                threads=True,
-                progress=False,
-                session=session
+                threads=False,
+                progress=False
             )
             
             if not data.empty:
@@ -147,7 +138,6 @@ def fetch_filtered_market(show_all_rsi=False):
                         is_oversold = last_rsi <= 30
                         is_overbought = last_rsi >= 70
                         
-                        # Se la spunta "Mostra Tutti" non è attiva, preleva SOLO gli estremi
                         if not show_all_rsi and not (is_oversold or is_overbought):
                             continue
 
@@ -192,24 +182,21 @@ def fetch_filtered_market(show_all_rsi=False):
         except Exception:
             pass
         
-        # Micro-pausa precauzionale di 0.3 secondi tra i blocchi per non far scattare i sistemi anti-bot
-        time.sleep(0.3)
         progress_bar.progress(min((idx + 1) / total_chunks, 1.0))
 
     progress_bar.empty()
     status_text.empty()
     return pd.DataFrame(results)
 
-# Sidebar - Opzioni
+# Sidebar
 st.sidebar.header("Opzioni di Scansione")
 show_all = st.sidebar.checkbox("Mostra TUTTI i titoli S&P 500 (inclusi RSI neutri)", value=False)
 
-# Caricamento Dati
-with st.spinner("Avvio scansione sicura dei mercati USA..."):
-    df = fetch_filtered_market(show_all_rsi=show_all)
+# Esecuzione
+df = fetch_filtered_market(show_all_rsi=show_all)
 
 if df.empty:
-    st.info("Nessun asset attualmente in zona di Ipercomprato (≥70) o Ipervenduto (≤30). Prova ad attivare la spunta 'Mostra TUTTI i titoli' nella barra laterale per visualizzare l'intera lista.")
+    st.info("Nessun asset attualmente in zona di Ipercomprato (≥70) o Ipervenduto (≤30). Prova ad attivare la spunta 'Mostra TUTTI i titoli' nella barra laterale.")
 else:
     col1, col2, col3 = st.columns(3)
     totale = len(df)
