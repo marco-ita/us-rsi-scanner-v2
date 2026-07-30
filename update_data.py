@@ -1,139 +1,110 @@
+import yfinance as yf
 import pandas as pd
 import numpy as np
-import yfinance as yf
-import requests
 
+def calculate_smma(series, window):
+    """
+    Calcola la Smoothed Moving Average (SMMA / Wilder's Smoothing)
+    utilizzata da eToro e TradingView.
+    """
+    smma = pd.Series(index=series.index, dtype='float64')
+    if len(series) < window:
+        return smma
+    
+    # Valore iniziale = media aritmetica dei primi 'window' elementi
+    smma.iloc[window - 1] = series.iloc[:window].mean()
+    
+    # Algoritmo ricorsivo di eToro
+    for i in range(window, len(series)):
+        smma.iloc[i] = (smma.iloc[i - 1] * (window - 1) + series.iloc[i]) / window
+        
+    return smma
 
-def get_test_tickers():
-    # 10 Asset di prova per testare l'automazione rapida
-    return {
-        "AAPL": "Apple Inc.",
-        "MSFT": "Microsoft Corporation",
-        "GOOGL": "Alphabet Inc.",
-        "AMZN": "Amazon.com Inc.",
-        "NVDA": "NVIDIA Corporation",
-        "TSLA": "Tesla Inc.",
-        "META": "Meta Platforms Inc.",
-        "NFLX": "Netflix Inc.",
-        "AMD": "Advanced Micro Devices Inc.",
-        "INTC": "Intel Corporation"
-    }
-
-def calculate_rsi(series, period=14):
+def calculate_rsi(series, window=14):
     delta = series.diff()
-    gain = delta.where(delta > 0, 0.0)
-    loss = -delta.where(delta < 0, 0.0)
-    avg_gain = gain.ewm(alpha=1/period, min_periods=period, adjust=False).mean()
-    avg_loss = loss.ewm(alpha=1/period, min_periods=period, adjust=False).mean()
-    avg_loss = avg_loss.replace(0, 1e-9)
+    gain = (delta.where(delta > 0, 0))
+    loss = (-delta.where(delta < 0, 0))
+    avg_gain = gain.ewm(alpha=1/window, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1/window, adjust=False).mean()
     rs = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
 
-def calculate_calibrated_trend(sma_series, window, slope_threshold):
-    try:
-        clean_sma = sma_series.dropna()
-        if len(clean_sma) < (window + 2):
-            return "Zero Pendenza / Piatta ➡️"
-        
-        y = clean_sma.iloc[-(window+2):].values
-        if len(y) < 2 or y[0] == 0:
-            return "Zero Pendenza / Piatta ➡️"
-        
-        total_change_pct = ((y[-1] - y[0]) / y[0]) * 100
-        
-        d1 = np.diff(y)
-        accel = (np.diff(d1)[-1] / y[-2]) * 100 if len(d1) >= 2 and y[-2] != 0 else 0.0
-        
-        if abs(total_change_pct) < slope_threshold:
-            return "Zero Pendenza / Piatta ➡️"
-        
-        if total_change_pct > slope_threshold:
-            if accel < -0.01:
-                return "Inizio Declino / Curva Giù ⚠️"
-            return "Forte Crescita 📈"
-        else:
-            if accel > 0.01:
-                return "Inizio Rimbalzo / Curva Su 🔄"
-            return "Forte Declino 📉"
-    except Exception:
-        return "Zero Pendenza / Piatta ➡️"
-
 def run_update():
-    print("🔄 [TEST] Avvio aggiornamento rapido dati...")
-    ticker_map = get_test_tickers()
-    tickers = list(ticker_map.keys())
+    tickers = ["TSLA", "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "NFLX", "AMD"]
+    
+    # Scarichiamo 5 anni di dati per avere la memoria storica completa per la SMMA di eToro
+    data = yf.download(tickers, period="5y", interval="1d", auto_adjust=False, group_by='ticker', progress=False)
+
     results = []
 
-    try:
-        data = yf.download(tickers, period="2y", interval="1d", auto_adjust=False, group_by='ticker', threads=False, progress=False)
-        
-        for ticker in tickers:
-            try:
-                df_ticker = data[ticker] if ticker in data.columns.levels[0] else None
-                if df_ticker is None or df_ticker.empty:
-                    continue
-                
-                df_ticker = df_ticker.dropna(subset=['Close'])
-                if len(df_ticker) < 200:
-                    continue
-                
-                close_prices = df_ticker['Close']
-                if isinstance(close_prices, pd.DataFrame):
-                    close_prices = close_prices.iloc[:, 0]
-                
-                rsi_series = calculate_rsi(close_prices, 14)
-                if rsi_series.empty:
-                    continue
-                    
-                last_rsi = float(rsi_series.iloc[-1])
-                if pd.isna(last_rsi):
-                    continue
-
-                sma40_series = close_prices.rolling(window=40).mean()
-                sma200_series = close_prices.rolling(window=200).mean()
-                
-                last_price = float(close_prices.iloc[-1])
-                last_sma40 = float(sma40_series.dropna().iloc[-1]) if not sma40_series.dropna().empty else None
-                last_sma200 = float(sma200_series.dropna().iloc[-1]) if not sma200_series.dropna().empty else None
-                
-                if last_sma40 is None or last_sma200 is None:
-                    continue
-
-                trend_sma40 = calculate_calibrated_trend(sma40_series, window=15, slope_threshold=0.5)
-                trend_sma200 = calculate_calibrated_trend(sma200_series, window=35, slope_threshold=1.0)
-                
-                pos_relative = "SMA 40 sopra SMA 200 🟢" if last_sma40 > last_sma200 else "SMA 40 sotto SMA 200 🔴"
-                
-                if last_rsi <= 30:
-                    rsi_status = "Ipervenduto (RSI ≤ 30) 🟢"
-                elif last_rsi >= 70:
-                    rsi_status = "Ipercomprato (RSI ≥ 70) 🔴"
-                else:
-                    rsi_status = "Neutro / Moderato ⚪"
-
-                company_name = ticker_map.get(ticker, "N/D")
-
-                results.append({
-                    "Ticker": ticker,
-                    "Nome Asset": company_name,
-                    "Prezzo ($)": round(last_price, 2),
-                    "RSI 14": round(last_rsi, 2),
-                    "Stato RSI": rsi_status,
-                    "SMA 40 ($)": round(last_sma40, 2),
-                    "Trend SMA 40": trend_sma40,
-                    "SMA 200 ($)": round(last_sma200, 2),
-                    "Trend SMA 200": trend_sma200,
-                    "Posizione Medie": pos_relative
-                })
-            except Exception as e:
-                print(f"Errore su {ticker}: {e}")
+    for ticker in tickers:
+        try:
+            df = data[ticker].dropna().copy()
+            if df.empty:
                 continue
-    except Exception as e:
-        print(f"Errore download: {e}")
 
-    df = pd.DataFrame(results)
-    df.to_csv("market_data.csv", index=False)
-    print(f"✅ TEST COMPLETATO! Salvati {len(df)} asset in 'market_data.csv'.")
+            close = df['Close']
+            
+            # 1. Calcolo Medie Standard (SMA)
+            df['SMA_40_Std'] = close.rolling(window=40).mean()
+            df['SMA_200_Std'] = close.rolling(window=200).mean()
+            
+            # 2. Calcolo Medie eToro (SMMA / Smoothed)
+            df['SMMA_40_eToro'] = calculate_smma(close, 40)
+            df['SMMA_200_eToro'] = calculate_smma(close, 200)
+
+            # 3. Calcolo RSI
+            df['RSI'] = calculate_rsi(close, 14)
+
+            # Estrazione ultimi valori
+            last_close = close.iloc[-1]
+            rsi_val = df['RSI'].iloc[-1]
+            
+            sma_40_std = df['SMA_40_Std'].iloc[-1]
+            sma_200_std = df['SMA_200_Std'].iloc[-1]
+            
+            smma_40_etoro = df['SMMA_40_eToro'].iloc[-1]
+            smma_200_etoro = df['SMMA_200_eToro'].iloc[-1]
+
+            # Pendenza eToro (confrontata con 5 giorni fa)
+            smma_40_prev = df['SMMA_40_eToro'].iloc[-6]
+            smma_200_prev = df['SMMA_200_eToro'].iloc[-6]
+
+            trend_40 = "In Declino 🔴" if smma_40_etoro < smma_40_prev else "In Crescita 🟢"
+            trend_200 = "In Declino 🔴" if smma_200_etoro < smma_200_prev else "In Crescita 🟢"
+
+            # Posizione Medie eToro
+            pos_medie = "SMMA 40 SOPRA SMMA 200 🟢" if smma_40_etoro > smma_200_etoro else "SMMA 40 SOTTO SMMA 200 🔴"
+
+            # Stato RSI
+            if rsi_val <= 30:
+                rsi_state = "Ipervenduto (RSI ≤ 30) 🟢"
+            elif rsi_val >= 70:
+                rsi_state = "Ipercomprato (RSI ≥ 70) 🔴"
+            else:
+                rsi_state = "Neutro ⚪"
+
+            results.append({
+                'Ticker': ticker,
+                'Nome Asset': ticker,
+                'Prezzo ($)': round(last_close, 2),
+                'RSI 14': round(rsi_val, 2),
+                'Stato RSI': rsi_state,
+                'SMA 40 Standard ($)': round(sma_40_std, 2),
+                'SMMA 40 eToro ($)': round(smma_40_etoro, 2),
+                'Trend 40 eToro': trend_40,
+                'SMA 200 Standard ($)': round(sma_200_std, 2),
+                'SMMA 200 eToro ($)': round(smma_200_etoro, 2),
+                'Trend 200 eToro': trend_200,
+                'Posizione Medie eToro': pos_medie
+            })
+        except Exception as e:
+            print(f"Errore su {ticker}: {e}")
+
+    res_df = pd.DataFrame(results)
+    res_df.to_csv('market_data.csv', index=False)
+    print("market_data.csv aggiornato con tutte le colonne affiancate!")
 
 if __name__ == "__main__":
     run_update()
+
