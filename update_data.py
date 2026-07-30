@@ -64,7 +64,7 @@ def run_update():
     results = []
 
     try:
-        data = yf.download(tickers, period="1y", interval="1d", group_by='ticker', threads=False, progress=False)
+        data = yf.download(tickers, period="2y", interval="1d", auto_adjust=False, group_by='ticker', threads=False, progress=False)
         
         for ticker in tickers:
             try:
