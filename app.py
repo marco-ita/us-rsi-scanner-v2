@@ -4,17 +4,39 @@ import numpy as np
 import yfinance as yf
 import requests
 
-st.set_page_config(page_title="US Market Scanner - RSI & SMA", layout="wide")
+st.set_page_config(page_title="US Market Scanner - RSI & Trend", layout="wide")
 
 st.title("📈 Scanner USA - RSI & Trend Calibrato (SMA 40 / 200)")
 st.caption("Pendenza e Derivate calibrate su orizzonti temporali differenti per SMA 40 (15gg) e SMA 200 (35gg).")
 
 @st.cache_data(ttl=14400)
 def get_us_tickers_with_names():
-    url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=0&download=true"
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
+    """
+    Recupera una vasta lista di azioni USA (S&P 500 + Nasdaq 100 + Extra) 
+    con nomi aziendali completi tramite sorgenti trasparenti.
+    """
     ticker_name_map = {}
+    
+    # 1. Tentativo da Wikipedia S&P 500
     try:
+        url_sp500 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+        tables = pd.read_html(url_sp500)
+        df_sp = tables[0]
+        for _, row in df_sp.iterrows():
+            sym = str(row['Symbol']).replace('.', '-')
+            name = str(row['Security'])
+            ticker_name_map[sym] = name
+    except Exception:
+        pass
+
+    # 2. Tentativo da NASDAQ API Screener (con headers migliorati)
+    try:
+        url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=0&download=true"
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9',
+        }
         res = requests.get(url, headers=headers, timeout=10)
         if res.status_code == 200:
             rows = res.json().get('data', {}).get('rows', [])
@@ -25,36 +47,38 @@ def get_us_tickers_with_names():
                     if raw_symbol:
                         clean_symbol = raw_symbol.replace('/', '-').replace('^', '-')
                         if clean_symbol.isalnum() or '-' in clean_symbol or '.' in clean_symbol:
-                            ticker_name_map[clean_symbol] = name
-                if ticker_name_map:
-                    return ticker_name_map
+                            if clean_symbol not in ticker_name_map:
+                                ticker_name_map[clean_symbol] = name
     except Exception:
         pass
-    
-    # Fallback ticker e nomi principali
-    return {
-        "AAPL": "Apple Inc.", "MSFT": "Microsoft Corporation", "GOOGL": "Alphabet Inc.",
-        "AMZN": "Amazon.com Inc.", "NVDA": "NVIDIA Corporation", "TSLA": "Tesla Inc.",
-        "META": "Meta Platforms Inc.", "NFLX": "Netflix Inc.", "AMD": "Advanced Micro Devices Inc.",
-        "INTC": "Intel Corporation", "BAC": "Bank of America Corp", "JPM": "JPMorgan Chase & Co.",
-        "V": "Visa Inc.", "DIS": "The Walt Disney Company"
-    }
+
+    # Fallback minimo di garanzia se tutto dovesse fallire
+    if not ticker_name_map:
+        ticker_name_map = {
+            "AAPL": "Apple Inc.", "MSFT": "Microsoft Corporation", "GOOGL": "Alphabet Inc.",
+            "AMZN": "Amazon.com Inc.", "NVDA": "NVIDIA Corporation", "TSLA": "Tesla Inc.",
+            "META": "Meta Platforms Inc.", "NFLX": "Netflix Inc.", "AMD": "Advanced Micro Devices Inc.",
+            "INTC": "Intel Corporation", "BAC": "Bank of America Corp", "JPM": "JPMorgan Chase & Co.",
+            "V": "Visa Inc.", "DIS": "The Walt Disney Company", "PYPL": "PayPal Holdings",
+            "PFE": "Pfizer Inc.", "NKE": "NIKE Inc.", "XOM": "Exxon Mobil Corp", "KO": "Coca-Cola Co"
+        }
+        
+    return ticker_name_map
 
 def calculate_rsi(series, period=14):
-    """ Formula ufficiale Wilder's RMA """
+    """ Formula ufficiale Wilder's RMA (Coincidente con eToro / TradingView) """
     delta = series.diff()
     gain = delta.where(delta > 0, 0.0)
     loss = -delta.where(delta < 0, 0.0)
     avg_gain = gain.ewm(alpha=1/period, min_periods=period, adjust=False).mean()
     avg_loss = loss.ewm(alpha=1/period, min_periods=period, adjust=False).mean()
     
-    # Evita divisione per zero
     avg_loss = avg_loss.replace(0, 1e-9)
     rs = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
 
 def calculate_calibrated_trend(sma_series, window, slope_threshold):
-    """ Calcola la pendenza e la curvatura (derivata 2a) in modo sicuro """
+    """ Calcola la pendenza e la curvatura (derivata 2a) """
     try:
         clean_sma = sma_series.dropna()
         if len(clean_sma) < (window + 2):
@@ -64,10 +88,8 @@ def calculate_calibrated_trend(sma_series, window, slope_threshold):
         if len(y) < 2 or y[0] == 0:
             return "Zero Pendenza / Piatta ➡️"
         
-        # Variazione percentuale totale
         total_change_pct = ((y[-1] - y[0]) / y[0]) * 100
         
-        # Derivata seconda (accelerazione)
         d1 = np.diff(y)
         if len(d1) < 2:
             accel = 0.0
@@ -93,7 +115,7 @@ def calculate_calibrated_trend(sma_series, window, slope_threshold):
 def fetch_filtered_market():
     ticker_map = get_us_tickers_with_names()
     tickers = list(ticker_map.keys())
-    chunk_size = 200  # Ridotto per evitare timeout
+    chunk_size = 150
     results = []
     
     progress_bar = st.progress(0)
@@ -102,7 +124,7 @@ def fetch_filtered_market():
 
     for idx, i in enumerate(range(0, len(tickers), chunk_size)):
         chunk = tickers[i:i+chunk_size]
-        status_text.text(f"Scansione RSI e Trend Calibrati... (Blocco {idx+1} di {total_chunks})")
+        status_text.text(f"Analisi di {len(tickers)} azioni USA... (Blocco {idx+1} di {total_chunks})")
         
         try:
             data = yf.download(chunk, period="1y", interval="1d", group_by='ticker', threads=True, progress=False)
@@ -111,7 +133,6 @@ def fetch_filtered_market():
 
             for ticker in chunk:
                 try:
-                    # Estrazione sicura delle serie di prezzo
                     if len(chunk) == 1:
                         df_ticker = data
                     else:
@@ -130,7 +151,6 @@ def fetch_filtered_market():
                     if isinstance(close_prices, pd.DataFrame):
                         close_prices = close_prices.iloc[:, 0]
                     
-                    # Calcolo RSI
                     rsi_series = calculate_rsi(close_prices, 14)
                     if rsi_series.empty:
                         continue
@@ -142,10 +162,10 @@ def fetch_filtered_market():
                     is_oversold = last_rsi <= 30
                     is_overbought = last_rsi >= 70
                     
+                    # Filtra: prende solo chi è in Ipercomprato o Ipervenduto
                     if not (is_oversold or is_overbought):
                         continue
 
-                    # Calcolo Medie Mobili
                     sma40_series = close_prices.rolling(window=40).mean()
                     sma200_series = close_prices.rolling(window=200).mean()
                     
@@ -156,7 +176,6 @@ def fetch_filtered_market():
                     if last_sma40 is None or last_sma200 is None:
                         continue
 
-                    # Calcolo Trend
                     trend_sma40 = calculate_calibrated_trend(sma40_series, window=15, slope_threshold=0.5)
                     trend_sma200 = calculate_calibrated_trend(sma200_series, window=35, slope_threshold=1.0)
                     
@@ -188,7 +207,7 @@ def fetch_filtered_market():
     return pd.DataFrame(results)
 
 # Caricamento Dati
-with st.spinner("Connessione e scansione indicatori in corso..."):
+with st.spinner("Scansione in corso su oltre 500+ titoli USA..."):
     df = fetch_filtered_market()
 
 if df.empty:
