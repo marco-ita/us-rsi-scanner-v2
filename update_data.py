@@ -3,6 +3,7 @@ import numpy as np
 import yfinance as yf
 import requests
 
+
 def get_test_tickers():
     # 10 Asset di prova per testare l'automazione rapida
     return {
