@@ -27,7 +27,6 @@ jobs:
       - name: Run Market Data Update
         run: |
           python update_data.py
-          
 
       - name: Commit and Push Updated CSV
         run: |
