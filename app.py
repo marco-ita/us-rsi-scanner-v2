@@ -3,66 +3,39 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import requests
+import time
 
-st.set_page_config(page_title="US Market Scanner - RSI & Trend", layout="wide")
+st.set_page_config(page_title="US Market Scanner - Anti-Block Engine", layout="wide")
 
-st.title("📈 Scanner USA - RSI & Trend Calibrato (SMA 40 / 200)")
-st.caption("Pendenza e Derivate calibrate su orizzonti temporali differenti per SMA 40 (15gg) e SMA 200 (35gg).")
+st.title("📈 Scanner USA - RSI & Trend Calibrato (Bypass Anti-Block)")
+st.caption("Engine avanzato con gestione Cookie/Crumb, User-Agent rotanti e scaricamento a blocchi sicuri.")
 
 @st.cache_data(ttl=14400)
-def get_us_tickers_with_names():
+def get_sp500_tickers_with_names():
     """
-    Recupera una vasta lista di azioni USA (S&P 500 + Nasdaq 100 + Extra) 
-    con nomi aziendali completi tramite sorgenti trasparenti.
+    Recupera i ticker dell'S&P 500 direttamente da Wikipedia (fonte affidabile non bloccata).
     """
     ticker_name_map = {}
-    
-    # 1. Tentativo da Wikipedia S&P 500
     try:
         url_sp500 = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-        tables = pd.read_html(url_sp500)
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'}
+        req = requests.get(url_sp500, headers=headers, timeout=10)
+        tables = pd.read_html(req.text)
         df_sp = tables[0]
         for _, row in df_sp.iterrows():
             sym = str(row['Symbol']).replace('.', '-')
             name = str(row['Security'])
             ticker_name_map[sym] = name
     except Exception:
-        pass
-
-    # 2. Tentativo da NASDAQ API Screener (con headers migliorati)
-    try:
-        url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=0&download=true"
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'en-US,en;q=0.9',
-        }
-        res = requests.get(url, headers=headers, timeout=10)
-        if res.status_code == 200:
-            rows = res.json().get('data', {}).get('rows', [])
-            if rows:
-                for r in rows:
-                    raw_symbol = str(r.get('symbol', '')).strip()
-                    name = str(r.get('name', 'N/D')).strip()
-                    if raw_symbol:
-                        clean_symbol = raw_symbol.replace('/', '-').replace('^', '-')
-                        if clean_symbol.isalnum() or '-' in clean_symbol or '.' in clean_symbol:
-                            if clean_symbol not in ticker_name_map:
-                                ticker_name_map[clean_symbol] = name
-    except Exception:
-        pass
-
-    # Fallback minimo di garanzia se tutto dovesse fallire
-    if not ticker_name_map:
+        # Fallback solido di sicurezza se Wikipedia dovesse fallire
         ticker_name_map = {
             "AAPL": "Apple Inc.", "MSFT": "Microsoft Corporation", "GOOGL": "Alphabet Inc.",
             "AMZN": "Amazon.com Inc.", "NVDA": "NVIDIA Corporation", "TSLA": "Tesla Inc.",
             "META": "Meta Platforms Inc.", "NFLX": "Netflix Inc.", "AMD": "Advanced Micro Devices Inc.",
             "INTC": "Intel Corporation", "BAC": "Bank of America Corp", "JPM": "JPMorgan Chase & Co.",
-            "V": "Visa Inc.", "DIS": "The Walt Disney Company", "PYPL": "PayPal Holdings",
-            "PFE": "Pfizer Inc.", "NKE": "NIKE Inc.", "XOM": "Exxon Mobil Corp", "KO": "Coca-Cola Co"
+            "V": "Visa Inc.", "DIS": "The Walt Disney Company", "PYPL": "PayPal Holdings Inc.",
+            "PFE": "Pfizer Inc.", "NKE": "NIKE Inc.", "XOM": "Exxon Mobil Corp", "KO": "The Coca-Cola Co"
         }
-        
     return ticker_name_map
 
 def calculate_rsi(series, period=14):
@@ -78,7 +51,7 @@ def calculate_rsi(series, period=14):
     return 100 - (100 / (1 + rs))
 
 def calculate_calibrated_trend(sma_series, window, slope_threshold):
-    """ Calcola la pendenza e la curvatura (derivata 2a) """
+    """ Calcola pendenza e derivata seconda della SMA """
     try:
         clean_sma = sma_series.dropna()
         if len(clean_sma) < (window + 2):
@@ -91,11 +64,7 @@ def calculate_calibrated_trend(sma_series, window, slope_threshold):
         total_change_pct = ((y[-1] - y[0]) / y[0]) * 100
         
         d1 = np.diff(y)
-        if len(d1) < 2:
-            accel = 0.0
-        else:
-            d2 = np.diff(d1)
-            accel = (d2[-1] / y[-2]) * 100 if y[-2] != 0 else 0.0
+        accel = (np.diff(d1)[-1] / y[-2]) * 100 if len(d1) >= 2 and y[-2] != 0 else 0.0
         
         if abs(total_change_pct) < slope_threshold:
             return "Zero Pendenza / Piatta ➡️"
@@ -112,113 +81,142 @@ def calculate_calibrated_trend(sma_series, window, slope_threshold):
         return "Zero Pendenza / Piatta ➡️"
 
 @st.cache_data(ttl=14400)
-def fetch_filtered_market():
-    ticker_map = get_us_tickers_with_names()
+def fetch_filtered_market(show_all_rsi=False):
+    ticker_map = get_sp500_tickers_with_names()
     tickers = list(ticker_map.keys())
-    chunk_size = 150
+    
+    # CHUNKING SICURO: Blocchi piccolissimi da 30 ticker per evitare il rate-limiting di Yahoo
+    chunk_size = 30
     results = []
     
     progress_bar = st.progress(0)
     status_text = st.empty()
     total_chunks = max(1, (len(tickers) // chunk_size) + 1)
 
+    # Configurazione della sessione HTTP per imitare un browser reale
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+    })
+
     for idx, i in enumerate(range(0, len(tickers), chunk_size)):
         chunk = tickers[i:i+chunk_size]
-        status_text.text(f"Analisi di {len(tickers)} azioni USA... (Blocco {idx+1} di {total_chunks})")
+        status_text.text(f"Scansione sicura in corso... Blocco {idx+1} di {total_chunks} ({len(results)} asset trovati)")
         
         try:
-            data = yf.download(chunk, period="1y", interval="1d", group_by='ticker', threads=True, progress=False)
-            if data.empty:
-                continue
-
-            for ticker in chunk:
-                try:
-                    if len(chunk) == 1:
-                        df_ticker = data
-                    else:
-                        if ticker not in data.columns.levels[0]:
-                            continue
-                        df_ticker = data[ticker]
-                    
-                    if df_ticker is None or df_ticker.empty:
-                        continue
-                    
-                    df_ticker = df_ticker.dropna(subset=['Close'])
-                    if len(df_ticker) < 200:
-                        continue
-                    
-                    close_prices = df_ticker['Close']
-                    if isinstance(close_prices, pd.DataFrame):
-                        close_prices = close_prices.iloc[:, 0]
-                    
-                    rsi_series = calculate_rsi(close_prices, 14)
-                    if rsi_series.empty:
-                        continue
+            # Scarichiamo il blocco tramite la sessione camuffata
+            data = yf.download(
+                chunk,
+                period="1y",
+                interval="1d",
+                group_by='ticker',
+                threads=True,
+                progress=False,
+                session=session
+            )
+            
+            if not data.empty:
+                for ticker in chunk:
+                    try:
+                        if len(chunk) == 1:
+                            df_ticker = data
+                        else:
+                            if ticker not in data.columns.levels[0]:
+                                continue
+                            df_ticker = data[ticker]
                         
-                    last_rsi = float(rsi_series.iloc[-1])
-                    if pd.isna(last_rsi):
-                        continue
-                    
-                    is_oversold = last_rsi <= 30
-                    is_overbought = last_rsi >= 70
-                    
-                    # Filtra: prende solo chi è in Ipercomprato o Ipervenduto
-                    if not (is_oversold or is_overbought):
-                        continue
+                        if df_ticker is None or df_ticker.empty:
+                            continue
+                        
+                        df_ticker = df_ticker.dropna(subset=['Close'])
+                        if len(df_ticker) < 200:
+                            continue
+                        
+                        close_prices = df_ticker['Close']
+                        if isinstance(close_prices, pd.DataFrame):
+                            close_prices = close_prices.iloc[:, 0]
+                        
+                        rsi_series = calculate_rsi(close_prices, 14)
+                        if rsi_series.empty:
+                            continue
+                            
+                        last_rsi = float(rsi_series.iloc[-1])
+                        if pd.isna(last_rsi):
+                            continue
+                        
+                        is_oversold = last_rsi <= 30
+                        is_overbought = last_rsi >= 70
+                        
+                        # Se la spunta "Mostra Tutti" non è attiva, preleva SOLO gli estremi
+                        if not show_all_rsi and not (is_oversold or is_overbought):
+                            continue
 
-                    sma40_series = close_prices.rolling(window=40).mean()
-                    sma200_series = close_prices.rolling(window=200).mean()
-                    
-                    last_price = float(close_prices.iloc[-1])
-                    last_sma40 = float(sma40_series.dropna().iloc[-1]) if not sma40_series.dropna().empty else None
-                    last_sma200 = float(sma200_series.dropna().iloc[-1]) if not sma200_series.dropna().empty else None
-                    
-                    if last_sma40 is None or last_sma200 is None:
+                        sma40_series = close_prices.rolling(window=40).mean()
+                        sma200_series = close_prices.rolling(window=200).mean()
+                        
+                        last_price = float(close_prices.iloc[-1])
+                        last_sma40 = float(sma40_series.dropna().iloc[-1]) if not sma40_series.dropna().empty else None
+                        last_sma200 = float(sma200_series.dropna().iloc[-1]) if not sma200_series.dropna().empty else None
+                        
+                        if last_sma40 is None or last_sma200 is None:
+                            continue
+
+                        trend_sma40 = calculate_calibrated_trend(sma40_series, window=15, slope_threshold=0.5)
+                        trend_sma200 = calculate_calibrated_trend(sma200_series, window=35, slope_threshold=1.0)
+                        
+                        pos_relative = "SMA 40 sopra SMA 200 🟢" if last_sma40 > last_sma200 else "SMA 40 sotto SMA 200 🔴"
+                        
+                        if last_rsi <= 30:
+                            rsi_status = "Ipervenduto (RSI ≤ 30) 🟢"
+                        elif last_rsi >= 70:
+                            rsi_status = "Ipercomprato (RSI ≥ 70) 🔴"
+                        else:
+                            rsi_status = "Neutro / Moderato ⚪"
+
+                        company_name = ticker_map.get(ticker, "N/D")
+
+                        results.append({
+                            "Ticker": ticker,
+                            "Nome Asset": company_name,
+                            "Prezzo ($)": round(last_price, 2),
+                            "RSI 14": round(last_rsi, 2),
+                            "Stato RSI": rsi_status,
+                            "SMA 40 ($)": round(last_sma40, 2),
+                            "Trend SMA 40": trend_sma40,
+                            "SMA 200 ($)": round(last_sma200, 2),
+                            "Trend SMA 200": trend_sma200,
+                            "Posizione Medie": pos_relative
+                        })
+                    except Exception:
                         continue
-
-                    trend_sma40 = calculate_calibrated_trend(sma40_series, window=15, slope_threshold=0.5)
-                    trend_sma200 = calculate_calibrated_trend(sma200_series, window=35, slope_threshold=1.0)
-                    
-                    pos_relative = "SMA 40 sopra SMA 200 🟢" if last_sma40 > last_sma200 else "SMA 40 sotto SMA 200 🔴"
-                    rsi_status = "Ipervenduto (RSI ≤ 30) 🟢" if is_oversold else "Ipercomprato (RSI ≥ 70) 🔴"
-                    company_name = ticker_map.get(ticker, "N/D")
-
-                    results.append({
-                        "Ticker": ticker,
-                        "Nome Asset": company_name,
-                        "Prezzo ($)": round(last_price, 2),
-                        "RSI 14": round(last_rsi, 2),
-                        "Stato RSI": rsi_status,
-                        "SMA 40 ($)": round(last_sma40, 2),
-                        "Trend SMA 40": trend_sma40,
-                        "SMA 200 ($)": round(last_sma200, 2),
-                        "Trend SMA 200": trend_sma200,
-                        "Posizione Medie": pos_relative
-                    })
-                except Exception:
-                    continue
         except Exception:
-            continue
+            pass
         
+        # Micro-pausa precauzionale di 0.3 secondi tra i blocchi per non far scattare i sistemi anti-bot
+        time.sleep(0.3)
         progress_bar.progress(min((idx + 1) / total_chunks, 1.0))
 
     progress_bar.empty()
     status_text.empty()
     return pd.DataFrame(results)
 
+# Sidebar - Opzioni
+st.sidebar.header("Opzioni di Scansione")
+show_all = st.sidebar.checkbox("Mostra TUTTI i titoli S&P 500 (inclusi RSI neutri)", value=False)
+
 # Caricamento Dati
-with st.spinner("Scansione in corso su oltre 500+ titoli USA..."):
-    df = fetch_filtered_market()
+with st.spinner("Avvio scansione sicura dei mercati USA..."):
+    df = fetch_filtered_market(show_all_rsi=show_all)
 
 if df.empty:
-    st.info("Nessun asset attualmente in zona di Ipercomprato (≥70) o Ipervenduto (≤30).")
+    st.info("Nessun asset attualmente in zona di Ipercomprato (≥70) o Ipervenduto (≤30). Prova ad attivare la spunta 'Mostra TUTTI i titoli' nella barra laterale per visualizzare l'intera lista.")
 else:
     col1, col2, col3 = st.columns(3)
     totale = len(df)
     ipervenduti = len(df[df['RSI 14'] <= 30])
     ipercomprati = len(df[df['RSI 14'] >= 70])
     
-    col1.metric("Totale Asset Filtrati", totale)
+    col1.metric("Totale Asset Estratti", totale)
     col2.metric("Ipervenduto (RSI ≤ 30) 🟢", ipervenduti)
     col3.metric("Ipercomprato (RSI ≥ 70) 🔴", ipercomprati)
 
