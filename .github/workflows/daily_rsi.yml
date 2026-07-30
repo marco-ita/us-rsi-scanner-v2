@@ -32,3 +32,9 @@ jobs:
           git add rsi_market_data.csv
           git commit -m "Auto-update RSI market data" || exit 0
           git push
+
+
+
+
+
+          
