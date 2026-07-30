@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 
+
 st.set_page_config(page_title="US Market Scanner - Ultra Fast", layout="wide")
 
 st.title("📈 Scanner USA - RSI & Trend Calibrato (SMA 40 / 200)")
