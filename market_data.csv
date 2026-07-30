@@ -1,0 +1,10 @@
+Ticker,Nome Asset,Prezzo ($),RSI 14,Stato RSI,SMA 40 Standard ($),SMMA 40 eToro ($),Trend 40 eToro,SMA 200 Standard ($),SMMA 200 eToro ($),Trend 200 eToro,Posizione Medie eToro
+TSLA,TSLA,304.82,28.68,Ipervenduto (RSI ≤ 30) 🟢,384.26,387.38,In Declino 🔴,412.2,368.21,In Declino 🔴,SMMA 40 SOPRA SMMA 200 🟢
+AAPL,AAPL,332.74,60.98,Neutro ⚪,309.6,300.89,In Crescita 🟢,277.65,257.57,In Crescita 🟢,SMMA 40 SOPRA SMMA 200 🟢
+MSFT,MSFT,447.16,70.99,Ipercomprato (RSI ≥ 70) 🔴,390.88,401.07,In Declino 🔴,433.81,428.73,In Declino 🔴,SMMA 40 SOTTO SMMA 200 🔴
+GOOGL,GOOGL,333.16,41.87,Neutro ⚪,353.36,349.09,In Declino 🔴,325.71,276.37,In Crescita 🟢,SMMA 40 SOPRA SMMA 200 🟢
+AMZN,AMZN,233.98,42.78,Neutro ⚪,241.47,242.66,In Declino 🔴,234.75,223.13,In Crescita 🟢,SMMA 40 SOPRA SMMA 200 🟢
+NVDA,NVDA,191.82,39.9,Neutro ⚪,203.66,202.05,In Declino 🔴,193.03,171.05,In Crescita 🟢,SMMA 40 SOPRA SMMA 200 🟢
+META,META,529.99,30.76,Neutro ⚪,600.18,612.92,In Declino 🔴,635.24,617.33,In Declino 🔴,SMMA 40 SOTTO SMMA 200 🔴
+NFLX,NFLX,71.25,43.76,Neutro ⚪,74.98,80.46,In Declino 🔴,91.54,90.68,In Declino 🔴,SMMA 40 SOTTO SMMA 200 🔴
+AMD,AMD,460.18,42.21,Neutro ⚪,516.98,448.51,In Crescita 🟢,310.4,267.17,In Crescita 🟢,SMMA 40 SOPRA SMMA 200 🟢
