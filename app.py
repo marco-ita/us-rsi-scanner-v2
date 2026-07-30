@@ -4,10 +4,10 @@ import numpy as np
 import yfinance as yf
 import requests
 
-st.set_page_config(page_title="US Market Scanner - RSI & Calculus SMA Trend", layout="wide")
+st.set_page_config(page_title="US Market Scanner - Calibrated Trends", layout="wide")
 
-st.title("📈 Scanner USA - RSI & Trend Scientifico (Derivata Prima e Seconda)")
-st.caption("Classificazione avanzata della traiettoria delle SMA (Crescita, Declino, Inizio Rimbalzo, Inizio Inversione).")
+st.title("📈 Scanner USA - RSI & Trend Calibrato (SMA 40 / 200)")
+st.caption("Pendenza e Derivate calibrate su orizzonti temporali differenti per SMA 40 (15gg) e SMA 200 (30gg).")
 
 @st.cache_data(ttl=14400)
 def get_us_tickers_with_names():
@@ -48,38 +48,38 @@ def calculate_rsi(series, period=14):
     rs = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
 
-def calculate_derivative_trend(sma_series, window=5):
+def calculate_calibrated_trend(sma_series, window, slope_threshold):
     """
-    Calcola Pendenza (Derivata 1a) e Curvatura/Accelerazione (Derivata 2a) della SMA.
+    Calcola la pendenza e la curvatura (derivata 2a) adattate alla lunghezza della media mobile.
+    - SMA 40: window = 15 giorni
+    - SMA 200: window = 30 giorni
     """
     clean_sma = sma_series.dropna()
-    if len(clean_sma) < (window + 2):
+    if len(clean_sma) < window + 2:
         return "N/D"
     
-    # Prendiamo gli ultimi dati per il calcolo
     y = clean_sma.iloc[-(window+2):].values
     
-    # Derivata Prima (Velocità / Pendenza)
+    # Variazione percentuale totale nell'arco della finestra temporale
+    total_change_pct = (y[-1] - y[0]) / y[0] * 100
+    
+    # Derivata seconda per rilevare la curvatura recente
     d1 = np.diff(y)
-    
-    # Derivata Seconda (Accelerazione / Curvatura)
     d2 = np.diff(d1)
+    accel = d2[-1] / y[-2] * 100
     
-    recent_slope = d1[-1] / y[-2] * 100        # Pendenza percentuale recente
-    recent_accel = d2[-1] / y[-2] * 100        # Curvatura/Accelerazione recente
-    
-    threshold_slope = 0.05  # Tolleranza minima per considerare la media "piatta"
-    
-    if recent_slope > threshold_slope:
-        if recent_accel < -0.01:
-            return "Inizio Declino / Curva Giù ⚠️"  # Inversione Ribassista
-        return "Forte Crescita 📈"
-    elif recent_slope < -threshold_slope:
-        if recent_accel > 0.01:
-            return "Inizio Rimbalzo / Curva Su 🔄"   # Inversione Rialzista
-        return "Forte Declino 📉"
-    else:
+    # Se la variazione è sotto la soglia di tolleranza, la media è considereata PIATTA/ZERO PENDENZA
+    if abs(total_change_pct) < slope_threshold:
         return "Zero Pendenza / Piatta ➡️"
+    
+    if total_change_pct > slope_threshold:
+        if accel < -0.01:
+            return "Inizio Declino / Curva Giù ⚠️"
+        return "Forte Crescita 📈"
+    else:
+        if accel > 0.01:
+            return "Inizio Rimbalzo / Curva Su 🔄"
+        return "Forte Declino 📉"
 
 @st.cache_data(ttl=14400)
 def fetch_filtered_market():
@@ -94,7 +94,7 @@ def fetch_filtered_market():
 
     for idx, i in enumerate(range(0, len(tickers), chunk_size)):
         chunk = tickers[i:i+chunk_size]
-        status_text.text(f"Analisi Derivate SMA 40/200 ed RSI Wilder... (Blocco {idx+1} di {total_chunks})")
+        status_text.text(f"Scansione RSI e Trend Calibrati... (Blocco {idx+1} di {total_chunks})")
         try:
             data = yf.download(chunk, period="1y", interval="1d", group_by='ticker', threads=True, progress=False)
             
@@ -127,11 +127,12 @@ def fetch_filtered_market():
                         last_sma40 = float(sma40_series.iloc[-1])
                         last_sma200 = float(sma200_series.iloc[-1])
                         
-                        # Calcolo Trend via Derivata Seconda
-                        trend_sma40 = calculate_derivative_trend(sma40_series)
-                        trend_sma200 = calculate_derivative_trend(sma200_series)
+                        # CALIBRAZIONE DIFFERENZIATA:
+                        # SMA 40 -> Finestra di 15 giorni, soglia pendenza 0.5%
+                        trend_sma40 = calculate_calibrated_trend(sma40_series, window=15, slope_threshold=0.5)
+                        # SMA 200 -> Finestra di 35 giorni, soglia pendenza 1.0% (molto più rigida)
+                        trend_sma200 = calculate_calibrated_trend(sma200_series, window=35, slope_threshold=1.0)
                         
-                        # Posizione Relativa
                         pos_relative = "SMA 40 sopra SMA 200 🟢" if last_sma40 > last_sma200 else "SMA 40 sotto SMA 200 🔴"
                         rsi_status = "Ipervenduto (RSI ≤ 30) 🟢" if is_oversold else "Ipercomprato (RSI ≥ 70) 🔴"
                         company_name = ticker_map.get(ticker, "N/D")
@@ -160,7 +161,7 @@ def fetch_filtered_market():
     return pd.DataFrame(results)
 
 # Caricamento Dati
-with st.spinner("Calcolo derivate e scansione di mercato in corso..."):
+with st.spinner("Connessione e analisi avanzata in corso..."):
     df = fetch_filtered_market()
 
 if df.empty:
@@ -177,15 +178,15 @@ else:
 
     st.markdown("---")
 
-    # Filtri Laterali
+    # Filtri
     st.sidebar.header("Filtri Avanzati")
     search_query = st.sidebar.text_input("Cerca Ticker o Nome Società:", "").strip()
     filtro_rsi = st.sidebar.multiselect("Stato RSI:", options=df["Stato RSI"].unique(), default=df["Stato RSI"].unique())
-    filtro_trend40 = st.sidebar.multiselect("Trend SMA 40:", options=df["Trend SMA 40"].unique(), default=df["Trend SMA 40"].unique())
+    filtro_trend200 = st.sidebar.multiselect("Trend SMA 200:", options=df["Trend SMA 200"].unique(), default=df["Trend SMA 200"].unique())
 
     df_filtered = df[
         (df["Stato RSI"].isin(filtro_rsi)) & 
-        (df["Trend SMA 40"].isin(filtro_trend40))
+        (df["Trend SMA 200"].isin(filtro_trend200))
     ]
     
     if search_query:
@@ -203,9 +204,9 @@ else:
             "RSI 14": st.column_config.NumberColumn("RSI (14)", format="%.2f"),
             "Prezzo ($)": st.column_config.NumberColumn("Prezzo", format="$%.2f"),
             "SMA 40 ($)": st.column_config.NumberColumn("SMA 40", format="$%.2f"),
-            "Trend SMA 40": st.column_config.TextColumn("Trend / Curvatura SMA 40"),
+            "Trend SMA 40": st.column_config.TextColumn("Trend SMA 40 (15gg)"),
             "SMA 200 ($)": st.column_config.NumberColumn("SMA 200", format="$%.2f"),
-            "Trend SMA 200": st.column_config.TextColumn("Trend / Curvatura SMA 200"),
+            "Trend SMA 200": st.column_config.TextColumn("Trend SMA 200 (35gg)"),
             "Posizione Medie": st.column_config.TextColumn("Posizione Relativa"),
         },
         use_container_width=True,
