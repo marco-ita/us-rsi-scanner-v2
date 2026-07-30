@@ -1,79 +1,73 @@
 import streamlit as st
 import pandas as pd
-import os
+import time
 
+# Configurazione della pagina Streamlit
+st.set_page_config(
+    page_title="US Stock RSI Extreme Scanner",
+    page_icon="📈",
+    layout="wide"
+)
 
-st.set_page_config(page_title="US Market Scanner - Ultra Fast", layout="wide")
+# Titolo dell'applicazione
+st.title("📈 US Stock Market Scanner (eToro SMMA - RSI Estremi ≤ 30 o ≥ 70)")
+st.write("Dashboard di analisi in tempo reale sui titoli del mercato USA in condizione di **Ipervenduto (RSI ≤ 30)** o **Ipercomprato (RSI ≥ 70)** con parametri eToro (SMMA 40 & 200).")
 
-st.title("📈 Scanner USA - RSI & Trend Calibrato (SMA 40 / 200)")
-st.caption("Dashboard istantanea alimentata da pre-elaborazione dati.")
+# Pulsante di ricaricamento forzato nella barra laterale
+st.sidebar.header("Opzioni Dashboard")
+if st.sidebar.button("🔄 Forza Ricaricamento Dati"):
+    st.cache_data.clear()
+    st.rerun()
 
-@st.cache_data(ttl=3600)
+# Funzione per caricare i dati con svuotamento cache ogni 60 secondi
+@st.cache_data(ttl=60)
 def load_data():
-    file_path = "market_data.csv"
-    if os.path.exists(file_path):
-        return pd.read_csv(file_path)
-    return pd.DataFrame()
+    raw_url = f"https://raw.githubusercontent.com/marco-ita/us-rsi-scanner-v2/main/market_data.csv?v={int(time.time())}"
+    try:
+        df = pd.read_csv(raw_url)
+        return df
+    except Exception as e:
+        st.error(f"Errore nel caricamento del file CSV da GitHub: {e}")
+        return pd.DataFrame()
 
-df_raw = load_data()
+# Caricamento effettivo dei dati dal CSV generato da GitHub Actions
+df = load_data()
 
-if df_raw.empty:
-    st.error("⚠️ File `market_data.csv` non trovato o vuoto. Esegui prima lo script `update_data.py` per generare i dati.")
-else:
-    # Sidebar Filters
-    st.sidebar.header("Opzioni Visualizzazione")
-    show_all = st.sidebar.checkbox("Mostra TUTTI i titoli (inclusi RSI neutri)", value=False)
+if not df.empty:
+    # Filtri secondari nella barra laterale
+    st.sidebar.subheader("Filtri Dati")
     
-    if show_all:
-        df = df_raw.copy()
+    all_tickers = df['Ticker'].unique().tolist()
+    selected_tickers = st.sidebar.multiselect("Seleziona Ticker:", options=all_tickers, default=all_tickers)
+    
+    if 'Stato RSI' in df.columns:
+        all_rsi_states = df['Stato RSI'].unique().tolist()
+        selected_rsi_states = st.sidebar.multiselect("Stato RSI:", options=all_rsi_states, default=all_rsi_states)
+        df_filtered = df[(df['Ticker'].isin(selected_tickers)) & (df['Stato RSI'].isin(selected_rsi_states))]
     else:
-        df = df_raw[df_raw["Stato RSI"].str.contains("Ipervenduto|Ipercomprato", regex=True)].copy()
+        df_filtered = df[df['Ticker'].isin(selected_tickers)]
 
+    # Mostra statistiche veloci
     col1, col2, col3 = st.columns(3)
-    totale = len(df_raw)
-    ipervenduti = len(df_raw[df_raw['RSI 14'] <= 30])
-    ipercomprati = len(df_raw[df_raw['RSI 14'] >= 70])
+    col1.metric("Totale Asset in Segnale Estremo", len(df_filtered))
     
-    col1.metric("Totale Asset Monitorati", totale)
-    col2.metric("Ipervenduto (RSI ≤ 30) 🟢", ipervenduti)
-    col3.metric("Ipercomprato (RSI ≥ 70) 🔴", ipercomprati)
+    if 'Stato RSI' in df.columns:
+        ipervenduti = len(df_filtered[df_filtered['Stato RSI'].str.contains('Ipervenduto', na=False)])
+        col2.metric("In Ipervenduto (RSI ≤ 30)", ipervenduti)
+        
+        ipercomprati = len(df_filtered[df_filtered['Stato RSI'].str.contains('Ipercomprato', na=False)])
+        col3.metric("In Ipercomprato (RSI ≥ 70)", ipercomprati)
 
     st.markdown("---")
 
-    st.sidebar.header("Filtri Avanzati")
-    search_query = st.sidebar.text_input("Cerca Ticker o Nome Società:", "").strip()
-    
-    rsi_options = list(df["Stato RSI"].unique())
-    filtro_rsi = st.sidebar.multiselect("Stato RSI:", options=rsi_options, default=rsi_options)
-    
-    trend200_options = list(df["Trend SMA 200"].unique())
-    filtro_trend200 = st.sidebar.multiselect("Trend SMA 200:", options=trend200_options, default=trend200_options)
-
-    df_filtered = df[
-        (df["Stato RSI"].isin(filtro_rsi)) & 
-        (df["Trend SMA 200"].isin(filtro_trend200))
-    ]
-    
-    if search_query:
-        df_filtered = df_filtered[
-            df_filtered["Ticker"].str.contains(search_query.upper(), case=False, na=False) |
-            df_filtered["Nome Asset"].str.contains(search_query, case=False, na=False)
-        ]
-
-    st.subheader(f"Risultati ({len(df_filtered)} asset)")
+    # Tabella principale dei dati
+    st.subheader("Risultati Scansione Mercato USA")
     st.dataframe(
         df_filtered,
-        column_config={
-            "Ticker": st.column_config.TextColumn("Ticker"),
-            "Nome Asset": st.column_config.TextColumn("Nome Società / Asset"),
-            "RSI 14": st.column_config.NumberColumn("RSI (14)", format="%.2f"),
-            "Prezzo ($)": st.column_config.NumberColumn("Prezzo", format="$%.2f"),
-            "SMA 40 ($)": st.column_config.NumberColumn("SMA 40", format="$%.2f"),
-            "Trend SMA 40": st.column_config.TextColumn("Trend SMA 40 (15gg)"),
-            "SMA 200 ($)": st.column_config.NumberColumn("SMA 200", format="$%.2f"),
-            "Trend SMA 200": st.column_config.TextColumn("Trend SMA 200 (35gg)"),
-            "Posizione Medie": st.column_config.TextColumn("Posizione Relativa"),
-        },
         use_container_width=True,
         hide_index=True
     )
+
+    st.caption("I dati vengono aggiornati automaticamente dal workflow di GitHub Actions.")
+else:
+    st.info("Al momento nessun titolo del mercato USA si trova in condizione di Ipervenduto (RSI ≤ 30) o Ipercomprato (RSI ≥ 70).")
