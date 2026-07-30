@@ -1,5 +1,6 @@
 name: Daily Market Scanner Test
 
+
 on:
   workflow_dispatch: # Permette l'avvio manuale immediato tramite pulsante
   schedule:
