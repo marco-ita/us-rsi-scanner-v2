@@ -3,10 +3,10 @@ import pandas as pd
 import yfinance as yf
 import requests
 
-st.set_page_config(page_title="US Market Scanner - RSI & SMA", layout="wide")
+st.set_page_config(page_title="US Market Scanner - RSI Wilder & SMA", layout="wide")
 
-st.title("📈 Scanner USA - RSI (Ipercomprato/Ipervenduto) & Medie Mobili")
-st.caption("Estrae TUTTI gli asset con RSI ≤ 30 o RSI ≥ 70 e mostra i valori della SMA 40 e SMA 200.")
+st.title("📈 Scanner USA - RSI Official Wilder & Medie Mobili")
+st.caption("Estrae TUTTI gli asset con RSI ≤ 30 o RSI ≥ 70 (Calcolo coincidente con Investing.com ed eToro).")
 
 @st.cache_data(ttl=14400)
 def get_us_tickers():
@@ -22,15 +22,25 @@ def get_us_tickers():
                 return [t.replace('/', '-').replace('^', '-') for t in tickers if t.isalnum() or '-' in t or '.' in t]
     except Exception:
         pass
-    # Fallback ticker
+    # Fallback ticker principali
     return ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "TSLA", "META", "NFLX", "AMD", "INTC", "BAC", "JPM", "V", "DIS"]
 
 def calculate_rsi(series, period=14):
+    """
+    Calcola l'RSI a 14 periodi utilizzando l'Esponenziale di J. Welles Wilder (RMA/EWM).
+    Formula identica a quella utilizzata da TradingView, Investing.com ed eToro.
+    """
     delta = series.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-    rs = gain / loss
-    return 100 - (100 / (1 + rs))
+    gain = delta.where(delta > 0, 0.0)
+    loss = -delta.where(delta < 0, 0.0)
+    
+    # Smoothing Esponenziale di Wilder (alpha = 1/14)
+    avg_gain = gain.ewm(alpha=1/period, min_periods=period, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1/period, min_periods=period, adjust=False).mean()
+    
+    rs = avg_gain / avg_loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi
 
 @st.cache_data(ttl=14400)
 def fetch_filtered_market():
@@ -44,9 +54,9 @@ def fetch_filtered_market():
 
     for idx, i in enumerate(range(0, len(tickers), chunk_size)):
         chunk = tickers[i:i+chunk_size]
-        status_text.text(f"Scansione mercati e calcolo SMA 40 / 200... (Blocco {idx+1} di {total_chunks})")
+        status_text.text(f"Scansione mercati e calcolo RSI Wilder + SMA 40/200... (Blocco {idx+1} di {total_chunks})")
         try:
-            # Scarichiamo 1 anno di dati per calcolare accuratamente la SMA 200
+            # Scarichiamo 1 anno di dati per permettere il corretto 'warm-up' dell'RSI e della SMA 200
             data = yf.download(chunk, period="1y", interval="1d", group_by='ticker', threads=True, progress=False)
             
             for ticker in chunk:
@@ -58,7 +68,7 @@ def fetch_filtered_market():
                         if isinstance(close_prices, pd.DataFrame):
                             close_prices = close_prices.iloc[:, 0]
                         
-                        # Calcolo RSI
+                        # Calcolo RSI con formula ufficiale Wilder
                         rsi_series = calculate_rsi(close_prices, 14)
                         last_rsi = float(rsi_series.iloc[-1])
                         
@@ -70,7 +80,7 @@ def fetch_filtered_market():
                         is_overbought = last_rsi >= 70
                         
                         if not (is_oversold or is_overbought):
-                            continue  # Scarta gli asset con RSI neutro (tra 30 e 70)
+                            continue
 
                         # Calcolo Medie Mobili
                         sma40_series = close_prices.rolling(window=40).mean()
@@ -85,7 +95,7 @@ def fetch_filtered_market():
                         results.append({
                             "Ticker": ticker,
                             "Prezzo ($)": round(last_price, 2),
-                            "RSI 14": round(last_rsi, 2),
+                            "RSI 14 (Wilder)": round(last_rsi, 2),
                             "Stato RSI": rsi_status,
                             "SMA 40 ($)": round(last_sma40, 2) if not pd.isna(last_sma40) else None,
                             "SMA 200 ($)": round(last_sma200, 2) if not pd.isna(last_sma200) else None
@@ -111,8 +121,8 @@ else:
     # Metriche di Riepilogo
     col1, col2, col3 = st.columns(3)
     totale = len(df)
-    ipervenduti = len(df[df['RSI 14'] <= 30])
-    ipercomprati = len(df[df['RSI 14'] >= 70])
+    ipervenduti = len(df[df['RSI 14 (Wilder)'] <= 30])
+    ipercomprati = len(df[df['RSI 14 (Wilder)'] >= 70])
     
     col1.metric("Totale Asset Filtrati", totale)
     col2.metric("Ipervenduto (RSI ≤ 30) 🟢", ipervenduti)
@@ -135,7 +145,7 @@ else:
     st.dataframe(
         df_filtered,
         column_config={
-            "RSI 14": st.column_config.NumberColumn("RSI (14)", format="%.2f"),
+            "RSI 14 (Wilder)": st.column_config.NumberColumn("RSI (14)", format="%.2f"),
             "Prezzo ($)": st.column_config.NumberColumn("Prezzo", format="$%.2f"),
             "SMA 40 ($)": st.column_config.NumberColumn("SMA 40", format="$%.2f"),
             "SMA 200 ($)": st.column_config.NumberColumn("SMA 200", format="$%.2f"),
