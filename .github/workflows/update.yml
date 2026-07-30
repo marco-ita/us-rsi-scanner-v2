@@ -28,13 +28,12 @@ jobs:
         run: |
           python update_data.py
 
-      - name: Commit and Push Updated CSV
+          - name: Commit and Push Updated CSV
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git reset --soft origin/main
           git add market_data.csv
           git commit -m "Auto-update market_data.csv [skip ci]" || exit 0
-          git pull --rebase origin main
-          git push
-
-
+          git push origin main
