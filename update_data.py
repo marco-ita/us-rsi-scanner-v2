@@ -1,8 +1,10 @@
 import urllib.request
+import urllib.parse
 import json
+import time
 import pandas as pd
-import yfinance as yf
 import numpy as np
+import yfinance as yf
 
 def calculate_smma(series, window):
     """
@@ -32,43 +34,104 @@ def calculate_rsi(series, window=14):
     rs = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
 
-def get_all_us_tickers():
-    """
-    Recupera l'elenco completo e dinamico dei ticker quotati sul mercato USA (NASDAQ / NYSE)
-    tramite l'API ufficiale di NASDAQ Screener.
-    """
-    print("Download dinamico dei ticker dall'API NASDAQ...")
-    url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=10000"
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+# ---------------------------------------------------------
+# NUOVE FUNZIONI DI MAPPATURA E CATALOGO ETORO GLOBALE
+# ---------------------------------------------------------
+
+def clean_and_format_symbol(symbol):
+    """STEP 1: Formattazione standard dei ticker."""
+    if not symbol or symbol.startswith("ETORI"):
+        return None
+
+    if ".CVR" in symbol or ".OLD" in symbol or "OLD" in symbol:
+        return None
+
+    if symbol.endswith(".US"):
+        symbol = symbol[:-3]
+
+    parts = symbol.split(".")
+    if len(parts) == 2 and len(parts[1]) == 1 and parts[1].isalpha():
+        return f"{parts[0]}-{parts[1]}"
+
+    suffix_mapping = {
+        ".MI": ".MI", ".DE": ".DE", ".PA": ".PA", ".L": ".L",
+        ".AS": ".AS", ".MC": ".MC", ".SW": ".SW",
+        ".HK": ".HK", ".T": ".T", ".SI": ".SI", ".AX": ".AX"
     }
+
+    for etoro_suff, yahoo_suff in suffix_mapping.items():
+        if symbol.endswith(etoro_suff):
+            base_symbol = symbol.replace(etoro_suff, "")
+            return f"{base_symbol}{yahoo_suff}"
+
+    return symbol
+
+def extract_symbol_from_images(images_list):
+    """STEP 2: Estrazione nativa dello slug dall'URI avatar eToro."""
+    if not images_list or not isinstance(images_list, list):
+        return None
+    
+    for img in images_list:
+        uri = img.get('Uri', '') if isinstance(img, dict) else ''
+        if 'market-avatars/' in uri:
+            try:
+                raw_slug = uri.split('market-avatars/')[1].split('/')[0]
+                if raw_slug:
+                    return clean_and_format_symbol(raw_slug.upper())
+            except Exception:
+                continue
+    return None
+
+def get_etoro_catalog():
+    """Scarica il catalogo globale eToro (Azioni ed ETF)."""
+    print("Download dinamico del catalogo globale dall'API di eToro...")
+    url = "https://api.etorostatic.com/sapi/instrumentsmetadata/V1.1/instruments"
+    headers = {'User-Agent': 'Mozilla/5.0'}
     
     try:
         req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req) as response:
             data = json.loads(response.read().decode())
         
-        rows = data['data']['table']['rows']
-        # Estraiamo solo i ticker azionari puliti (solo lettere, senza warrant/azioni speciali)
-        tickers = [r['symbol'] for r in rows if r['symbol'].isalpha()]
-        print(f"Ottenuti {len(tickers)} ticker azionari USA dall'API NASDAQ.")
-        return list(set(tickers))
+        instruments = data.get('InstrumentDisplayDatas', []) if isinstance(data, dict) else data
+        ticker_map = {} # {yahoo_symbol: name}
+        
+        for item in instruments:
+            type_id = item.get('InstrumentTypeID')
+            symbol_raw = item.get('SymbolFull') or item.get('Symbol')
+            name = item.get('InstrumentDisplayName', symbol_raw)
+            
+            if not symbol_raw or type_id not in [5, 6]:
+                continue
+
+            clean_sym = clean_and_format_symbol(symbol_raw)
+            uri_sym = extract_symbol_from_images(item.get('Images', []))
+
+            final_ticker = clean_sym or uri_sym
+            if final_ticker:
+                ticker_map[final_ticker] = name
+
+        print(f"Ottenuti {len(ticker_map)} ticker unici dal catalogo eToro.")
+        return ticker_map
     except Exception as e:
-        print(f"Impossibile contattare l'API NASDAQ ({e}). Utilizzo fallback su paniere S&P 500.")
-        try:
-            tables = pd.read_html('https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
-            return tables[0]['Symbol'].str.replace('.', '-', regex=False).tolist()
-        except Exception as e2:
-            print(f"Errore anche nel fallback: {e2}")
-            return ["TSLA", "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "NFLX", "AMD", "INTC"]
+        print(f"Errore nel caricamento del catalogo eToro: {e}")
+        return {}
+
+# ---------------------------------------------------------
+# ESECUZIONE DELLA SCANSIONE (MANTENUTA INTEGRALMENTE DALLA TUA STRUTTURA)
+# ---------------------------------------------------------
 
 def run_update():
-    tickers = get_all_us_tickers()
-    print(f"Inizio scansione mercato USA su {len(tickers)} asset...")
+    ticker_map = get_etoro_catalog()
+    if not ticker_map:
+        print("Nessun ticker disponibile. Interruzione.")
+        return
+
+    tickers = list(ticker_map.keys())
+    print(f"Inizio scansione globale su {len(tickers)} asset...")
 
     results = []
     
-    # Processiamo a blocchi per ottimizzare il download dei dati da Yahoo Finance
     chunk_size = 100
     ticker_chunks = [tickers[i:i + chunk_size] for i in range(0, len(tickers), chunk_size)]
 
@@ -81,15 +144,16 @@ def run_update():
                     if isinstance(data.columns, pd.MultiIndex):
                         if ticker not in data.columns.levels[0]:
                             continue
-                        df = data[ticker].dropna().copy()
+                        df = data[ticker].dropna(how='all').copy()
                     else:
-                        df = data.dropna().copy()
+                        df = data.dropna(how='all').copy()
 
-                    if df.empty or len(df) < 200:
+                    # Pulizia dei prezzi Close per evitare NaN su candele in corso di borse europee
+                    close = df['Close'].dropna() if 'Close' in df else pd.Series()
+
+                    if close.empty or len(close) < 200:
                         continue
 
-                    close = df['Close']
-                    
                     # 1. Calcolo RSI
                     rsi_series = calculate_rsi(close, 14)
                     rsi_val = rsi_series.iloc[-1]
@@ -106,7 +170,7 @@ def run_update():
                     smma_40_val = smma_40_series.iloc[-1]
                     smma_200_val = smma_200_series.iloc[-1]
 
-                    # 3. Pendenza / Trend eToro (confrontato con 5 giorni fa)
+                    # 3. Pendenza / Trend eToro (confrontato con 5 giorni fa - LOGICA ORIGINALE)
                     smma_40_prev = smma_40_series.iloc[-6]
                     smma_200_prev = smma_200_series.iloc[-6]
 
@@ -122,9 +186,11 @@ def run_update():
                     else:
                         rsi_state = "Ipercomprato (RSI ≥ 70) 🔴"
 
+                    asset_name = ticker_map.get(ticker, ticker)
+
                     results.append({
                         'Ticker': ticker,
-                        'Nome Asset': ticker,
+                        'Nome Asset': asset_name,
                         'Prezzo ($)': round(float(last_close), 2),
                         'RSI 14': round(float(rsi_val), 2),
                         'Stato RSI': rsi_state,
