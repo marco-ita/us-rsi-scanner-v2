@@ -8,58 +8,43 @@ import numpy as np
 import requests
 import yfinance as yf
 
-# Lista di User-Agent reali da browser desktop (Windows / Mac / Linux)
+# Lista di User-Agent di browser desktop reali
 USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15'
 ]
 
 def get_browser_session():
     """
-    Crea una sessione Requests configurata per simulare perfettamente un browser reale
-    con cookie di sessione validi da Yahoo Finance.
+    Inizializza una sessione HTTP con cookie e header reali di Yahoo Finance.
     """
     session = requests.Session()
-    user_agent = random.choice(USER_AGENTS)
-    
     session.headers.update({
-        'User-Agent': user_agent,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9,it;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br',
+        'User-Agent': random.choice(USER_AGENTS),
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.5',
         'DNT': '1',
         'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1'
+        'Upgrade-Insecure-Requests': '1'
     })
-    
-    # Chiamata civetta alla home page di Yahoo per raccogliere i cookie iniziali
     try:
         session.get("https://finance.yahoo.com", timeout=10)
     except Exception:
         pass
-        
     return session
 
 def calculate_smma(series, window):
     """
     Calcola la Smoothed Moving Average (SMMA / Wilder's Smoothing)
-    utilizzata esattamente dai grafici di eToro e TradingView.
+    utilizzata nei grafici di eToro e TradingView.
     """
     smma = pd.Series(index=series.index, dtype='float64')
     if len(series) < window:
         return smma
     
-    # Primo valore = media aritmetica dei primi 'window' elementi
     smma.iloc[window - 1] = series.iloc[:window].mean()
-    
-    # Algoritmo ricorsivo di eToro
     for i in range(window, len(series)):
         smma.iloc[i] = (smma.iloc[i - 1] * (window - 1) + series.iloc[i]) / window
         
@@ -75,16 +60,17 @@ def calculate_rsi(series, window=14):
     rs = avg_gain / avg_loss
     return 100 - (100 / (1 + rs))
 
-# ---------------------------------------------------------
-# MAPPATURA E CATALOGO ETORO GLOBALE
-# ---------------------------------------------------------
-
 def clean_and_format_symbol(symbol):
-    """STEP 1: Formattazione standard dei ticker."""
+    """
+    Filtra rigorosamente ticker non validi, CVR, opzioni e contratti obsoleti
+    che fanno fallire le chiamate e generano il Rate Limit.
+    """
     if not symbol or symbol.startswith("ETORI"):
         return None
 
-    if ".CVR" in symbol or ".OLD" in symbol or "OLD" in symbol:
+    # Scarta spazzatura anagrafica nota nei log
+    bad_tokens = [".CVR", ".OLD", "OLD", "DRM.", "CA1", "CA2", "PUT", "CALL", "CVR", "DORMANT", "MERGER", "ESCROW"]
+    if any(token in symbol.upper() for token in bad_tokens):
         return None
 
     if symbol.endswith(".US"):
@@ -108,7 +94,7 @@ def clean_and_format_symbol(symbol):
     return symbol
 
 def extract_symbol_from_images(images_list):
-    """STEP 2: Estrazione dello slug dall'URI avatar eToro."""
+    """Estrae lo slug pulito dall'URI eToro."""
     if not images_list or not isinstance(images_list, list):
         return None
     
@@ -124,8 +110,8 @@ def extract_symbol_from_images(images_list):
     return None
 
 def get_etoro_catalog():
-    """Scarica il catalogo globale eToro."""
-    print("Download dinamico del catalogo globale dall'API di eToro...")
+    """Scarica ed estrae il catalogo pulito da eToro."""
+    print("1. Download dinamico del catalogo globale da eToro...")
     url = "https://api.etorostatic.com/sapi/instrumentsmetadata/V1.1/instruments"
     headers = {'User-Agent': random.choice(USER_AGENTS)}
     
@@ -142,6 +128,7 @@ def get_etoro_catalog():
             symbol_raw = item.get('SymbolFull') or item.get('Symbol')
             name = item.get('InstrumentDisplayName', symbol_raw)
             
+            # Solo Azioni (5) ed ETF (6)
             if not symbol_raw or type_id not in [5, 6]:
                 continue
 
@@ -152,15 +139,11 @@ def get_etoro_catalog():
             if final_ticker:
                 ticker_map[final_ticker] = name
 
-        print(f"Ottenuti {len(ticker_map)} ticker unici dal catalogo eToro.")
+        print(f"Ottenuti {len(ticker_map)} ticker validi e filtrati dal catalogo eToro.")
         return ticker_map
     except Exception as e:
         print(f"Errore nel caricamento del catalogo eToro: {e}")
         return {}
-
-# ---------------------------------------------------------
-# ESECUZIONE DELLA SCANSIONE ANTI-RATE-LIMIT
-# ---------------------------------------------------------
 
 def run_update():
     ticker_map = get_etoro_catalog()
@@ -169,29 +152,30 @@ def run_update():
         return
 
     tickers = list(ticker_map.keys())
-    print(f"Inizio scansione globale su {len(tickers)} asset con Sessione Browser simulata...")
+    print(f"2. Inizio scansione su {len(tickers)} asset con protezione Anti-Rate-Limit Avanzata...")
 
     results = []
     
-    # Dimensione del blocco ottimizzata per simulare richieste web
-    chunk_size = 50
+    # Blocco da 25 ticker per minimizzare il carico per singola richiesta
+    chunk_size = 25
     ticker_chunks = [tickers[i:i + chunk_size] for i in range(0, len(tickers), chunk_size)]
 
-    # Inizializziamo la prima sessione browser
     session = get_browser_session()
 
     for chunk_idx, chunk in enumerate(ticker_chunks, 1):
-        # Ogni 10 blocchi rigeneriamo la sessione e l'User-Agent
-        if chunk_idx % 10 == 0:
+        # Rigenera la sessione ogni 15 blocchi
+        if chunk_idx % 15 == 0:
             session = get_browser_session()
 
-        # Pausa randomica tra 1 e 2.5 secondi per simulare il comportamento umano
-        time.sleep(random.uniform(1.0, 2.5))
-        
+        # Pausa cautelativa casuale tra un blocco e l'altro
+        time.sleep(random.uniform(2.0, 3.5))
+
         data = None
-        for attempt in range(3):
+        rate_limit_hits = 0
+
+        # Tentativi con Exponential Backoff Reale
+        while rate_limit_hits < 4:
             try:
-                # Iniettiamo la nostra sessione browser mascherata dentro yfinance
                 data = yf.download(
                     chunk, 
                     period="2y", 
@@ -203,10 +187,18 @@ def run_update():
                 )
                 if data is not None and not data.empty:
                     break
-            except Exception:
-                # Se fallisce, rigeneriamo la sessione e aspettiamo un po'
-                session = get_browser_session()
-                time.sleep(3.0)
+            except Exception as e:
+                err_msg = str(e)
+                if "Rate" in err_msg or "Too Many" in err_msg or "429" in err_msg:
+                    rate_limit_hits += 1
+                    # LETARGO ANTI-RATE-LIMIT: Aspetta 45 secondi se Yahoo invia il blocco
+                    sleep_time = 45 * rate_limit_hits
+                    print(f"⚠️ Rate Limit sul blocco {chunk_idx}/{len(ticker_chunks)}. Letargo di raffreddamento di {sleep_time}s...")
+                    time.sleep(sleep_time)
+                    session = get_browser_session() # Nuova sessione pulita
+                else:
+                    time.sleep(3)
+                    break
 
         if data is None or data.empty:
             continue
@@ -229,11 +221,11 @@ def run_update():
                 rsi_series = calculate_rsi(close, 14)
                 rsi_val = rsi_series.iloc[-1]
                 
-                # FILTRO OPERATIVO: Escludiamo chi ha RSI compreso tra 30.1 e 69.9
+                # FILTRO OPERATIVO: Mantieni solo RSI <= 30 o RSI >= 70
                 if 30 < rsi_val < 70:
                     continue
 
-                # 2. Calcolo SMMA 40 e SMMA 200 (Formula eToro)
+                # 2. Calcolo SMMA 40 e SMMA 200
                 smma_40_series = calculate_smma(close, 40)
                 smma_200_series = calculate_smma(close, 200)
 
@@ -241,14 +233,14 @@ def run_update():
                 smma_40_val = smma_40_series.iloc[-1]
                 smma_200_val = smma_200_series.iloc[-1]
 
-                # 3. Pendenza / Trend eToro (confrontato con 5 giorni fa)
+                # 3. Pendenza / Trend eToro (Confronto con 5 giorni fa - Logica Originale)
                 smma_40_prev = smma_40_series.iloc[-6]
                 smma_200_prev = smma_200_series.iloc[-6]
 
                 trend_40 = "In Declino 🔴" if smma_40_val < smma_40_prev else "In Crescita 🟢"
                 trend_200 = "In Declino 🔴" if smma_200_val < smma_200_prev else "In Crescita 🟢"
 
-                # 4. Posizione Medie eToro
+                # 4. Posizione Medie
                 pos_medie = "SMA 40 SOPRA SMA 200 🟢" if smma_40_val > smma_200_val else "SMA 40 SOTTO SMA 200 🔴"
 
                 # 5. Stato RSI
@@ -276,7 +268,7 @@ def run_update():
 
     res_df = pd.DataFrame(results)
     res_df.to_csv('market_data.csv', index=False)
-    print(f"Scansione completata con successo! Trovati {len(results)} asset in condizione estrema e salvati in market_data.csv.")
+    print(f"Scansione completata! Trovati {len(results)} asset in condizione estrema e salvati in market_data.csv.")
 
 if __name__ == "__main__":
     run_update()
