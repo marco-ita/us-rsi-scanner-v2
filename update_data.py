@@ -2,9 +2,50 @@ import urllib.request
 import urllib.parse
 import json
 import time
+import random
 import pandas as pd
 import numpy as np
+import requests
 import yfinance as yf
+
+# Lista di User-Agent reali da browser desktop (Windows / Mac / Linux)
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0',
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3.1 Safari/605.1.15',
+    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+]
+
+def get_browser_session():
+    """
+    Crea una sessione Requests configurata per simulare perfettamente un browser reale
+    con cookie di sessione validi da Yahoo Finance.
+    """
+    session = requests.Session()
+    user_agent = random.choice(USER_AGENTS)
+    
+    session.headers.update({
+        'User-Agent': user_agent,
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9,it;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'DNT': '1',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1'
+    })
+    
+    # Chiamata civetta alla home page di Yahoo per raccogliere i cookie iniziali
+    try:
+        session.get("https://finance.yahoo.com", timeout=10)
+    except Exception:
+        pass
+        
+    return session
 
 def calculate_smma(series, window):
     """
@@ -67,7 +108,7 @@ def clean_and_format_symbol(symbol):
     return symbol
 
 def extract_symbol_from_images(images_list):
-    """STEP 2: Estrazione nativa dello slug dall'URI avatar eToro."""
+    """STEP 2: Estrazione dello slug dall'URI avatar eToro."""
     if not images_list or not isinstance(images_list, list):
         return None
     
@@ -83,10 +124,10 @@ def extract_symbol_from_images(images_list):
     return None
 
 def get_etoro_catalog():
-    """Scarica il catalogo globale eToro (Azioni ed ETF)."""
+    """Scarica il catalogo globale eToro."""
     print("Download dinamico del catalogo globale dall'API di eToro...")
     url = "https://api.etorostatic.com/sapi/instrumentsmetadata/V1.1/instruments"
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    headers = {'User-Agent': random.choice(USER_AGENTS)}
     
     try:
         req = urllib.request.Request(url, headers=headers)
@@ -94,7 +135,7 @@ def get_etoro_catalog():
             data = json.loads(response.read().decode())
         
         instruments = data.get('InstrumentDisplayDatas', []) if isinstance(data, dict) else data
-        ticker_map = {} # {yahoo_symbol: name}
+        ticker_map = {}
         
         for item in instruments:
             type_id = item.get('InstrumentTypeID')
@@ -118,7 +159,7 @@ def get_etoro_catalog():
         return {}
 
 # ---------------------------------------------------------
-# ESECUZIONE DELLA SCANSIONE CON PERIOD="2Y" E ANTI-RATE-LIMIT
+# ESECUZIONE DELLA SCANSIONE ANTI-RATE-LIMIT
 # ---------------------------------------------------------
 
 def run_update():
@@ -128,27 +169,44 @@ def run_update():
         return
 
     tickers = list(ticker_map.keys())
-    print(f"Inizio scansione globale su {len(tickers)} asset (Storico 2 Anni)...")
+    print(f"Inizio scansione globale su {len(tickers)} asset con Sessione Browser simulata...")
 
     results = []
     
-    chunk_size = 40
+    # Dimensione del blocco ottimizzata per simulare richieste web
+    chunk_size = 50
     ticker_chunks = [tickers[i:i + chunk_size] for i in range(0, len(tickers), chunk_size)]
 
+    # Inizializziamo la prima sessione browser
+    session = get_browser_session()
+
     for chunk_idx, chunk in enumerate(ticker_chunks, 1):
-        # Micro-pausa per evitare il blocco IP
-        time.sleep(1.2)
+        # Ogni 10 blocchi rigeneriamo la sessione e l'User-Agent
+        if chunk_idx % 10 == 0:
+            session = get_browser_session()
+
+        # Pausa randomica tra 1 e 2.5 secondi per simulare il comportamento umano
+        time.sleep(random.uniform(1.0, 2.5))
         
-        # Gestione Retry (fino a 3 tentativi)
         data = None
         for attempt in range(3):
             try:
-                # Impostato a 2 Anni per bilanciare storicità e leggerezza
-                data = yf.download(chunk, period="2y", interval="1d", auto_adjust=False, group_by='ticker', progress=False)
+                # Iniettiamo la nostra sessione browser mascherata dentro yfinance
+                data = yf.download(
+                    chunk, 
+                    period="2y", 
+                    interval="1d", 
+                    auto_adjust=False, 
+                    group_by='ticker', 
+                    progress=False,
+                    session=session
+                )
                 if data is not None and not data.empty:
                     break
             except Exception:
-                time.sleep(2.5)
+                # Se fallisce, rigeneriamo la sessione e aspettiamo un po'
+                session = get_browser_session()
+                time.sleep(3.0)
 
         if data is None or data.empty:
             continue
@@ -218,7 +276,7 @@ def run_update():
 
     res_df = pd.DataFrame(results)
     res_df.to_csv('market_data.csv', index=False)
-    print(f"Scansione completata! Trovati {len(results)} asset in condizione estrema e salvati in market_data.csv.")
+    print(f"Scansione completata con successo! Trovati {len(results)} asset in condizione estrema e salvati in market_data.csv.")
 
 if __name__ == "__main__":
     run_update()
