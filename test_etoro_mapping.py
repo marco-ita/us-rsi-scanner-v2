@@ -4,35 +4,37 @@ import time
 import yfinance as yf
 
 def clean_and_format_symbol(symbol):
-    """
-    Pulisce e converte i ticker eToro nel formato esatto di Yahoo Finance.
-    """
     if not symbol or symbol.startswith("ETORI"):
         return None
 
-    # Scartiamo CVR (diritti) e vecchi ticker (.OLD)
-    if ".CVR" in symbol or ".OLD" in symbol:
+    if ".CVR" in symbol or ".OLD" in symbol or "OLD" in symbol:
         return None
 
-    # 1. Gestione titoli USA con suffisso .US
+    # 1. Rimozione .US dai titoli USA
     if symbol.endswith(".US"):
         symbol = symbol[:-3]
 
-    # 2. Conversione fondamentale per classi azionarie USA (es. BRK.B -> BRK-B)
-    # Se il punto è seguito da una sola lettera (es. .A, .B), Yahoo usa il trattino
+    # 2. Classi azionarie USA (es. BRK.B -> BRK-B)
     parts = symbol.split(".")
     if len(parts) == 2 and len(parts[1]) == 1 and parts[1].isalpha():
         return f"{parts[0]}-{parts[1]}"
 
-    # 3. Mappatura borse internazionali
+    # 3. Mappatura borse internazionali ed ASIATICHE
     suffix_mapping = {
+        # Europa
         ".MI": ".MI",  # Milano
-        ".DE": ".DE",  # Xetra
+        ".DE": ".DE",  # Xetra (Germania)
         ".PA": ".PA",  # Parigi
         ".L":  ".L",   # Londra
         ".AS": ".AS",  # Amsterdam
         ".MC": ".MC",  # Madrid
-        ".SW": ".SW"   # Svizzera
+        ".SW": ".SW",  # Svizzera
+        
+        # Asia & Pacifico
+        ".HK": ".HK",  # Hong Kong
+        ".T":  ".T",   # Tokyo (Giappone)
+        ".SI": ".SI",  # Singapore
+        ".AX": ".AX"   # Australia
     }
 
     for etoro_suff, yahoo_suff in suffix_mapping.items():
@@ -43,9 +45,6 @@ def clean_and_format_symbol(symbol):
     return symbol
 
 def search_yahoo_by_name(company_name):
-    """
-    Ricerca intelligente: Se il ticker fallisce, cerca il nome della società su Yahoo Finance.
-    """
     try:
         url = f"https://query2.finance.yahoo.com/v1/finance/search?q={urllib.parse.quote(company_name)}&quotesCount=1"
         headers = {'User-Agent': 'Mozilla/5.0'}
@@ -74,8 +73,13 @@ def test_etoro_to_yahoo():
 
     instruments = data.get('InstrumentDisplayDatas', []) if isinstance(data, dict) else data
 
-    # Selezioniamo Azioni ed ETF
-    test_list = []
+    usa_stocks = []
+    europe_stocks = []
+    asia_stocks = []
+    etfs = []
+
+    asia_suffixes = [".HK", ".T", ".SI", ".AX"]
+
     for item in instruments:
         type_id = item.get('InstrumentTypeID')
         symbol_raw = item.get('SymbolFull') or item.get('Symbol')
@@ -87,20 +91,30 @@ def test_etoro_to_yahoo():
         if not clean_sym:
             continue
 
-        test_list.append({
+        asset_info = {
             'raw_symbol': symbol_raw,
             'clean_symbol': clean_sym,
             'name': item.get('InstrumentDisplayName', ''),
             'type': 'ETF' if type_id == 6 else 'Stock'
-        })
+        }
 
-    # Campione mirato inclusivo di Berkshire Hathaway (BRK.B)
-    sample = [t for t in test_list if "BRK" in t['raw_symbol'] or "BERKSHIRE" in t['name'].upper()]
-    # Integriamo con altri titoli vari per il test
-    sample += test_list[:25]
+        # Catalogazione mirata per garantire test bilanciato
+        if type_id == 6:
+            etfs.append(asset_info)
+        elif any(clean_sym.endswith(s) for s in asia_suffixes):
+            asia_stocks.append(asset_info)
+        elif "." in clean_sym:
+            europe_stocks.append(asset_info)
+        else:
+            usa_stocks.append(asset_info)
+
+    print(f"Trovati su eToro: {len(usa_stocks)} Azioni USA, {len(europe_stocks)} Azioni Europee, {len(asia_stocks)} Azioni Asiatiche, {len(etfs)} ETF.")
+
+    # ESTRAGGIAMO UN MIX COMPLETO: 10 USA, 10 Europee, 10 Asiatiche, 10 ETF
+    sample = usa_stocks[:10] + europe_stocks[:10] + asia_stocks[:10] + etfs[:10]
     
-    print(f"2. Avvio Test su {len(sample)} asset (incluso Berkshire Hathaway)...")
-    print("=" * 75)
+    print(f"\n2. Avvio Test Globale su {len(sample)} asset (USA + Europa + ASIA + ETF)...")
+    print("=" * 85)
 
     success = 0
     failed = 0
@@ -109,8 +123,8 @@ def test_etoro_to_yahoo():
         sym = item['clean_symbol']
         raw_sym = item['raw_symbol']
         name = item['name']
+        asset_type = item['type']
 
-        # Pausa di 0.2s per evitare il rate-limiting di Yahoo
         time.sleep(0.2)
 
         try:
@@ -119,27 +133,26 @@ def test_etoro_to_yahoo():
             
             if not hist.empty:
                 last_price = round(float(hist['Close'].iloc[-1]), 2)
-                print(f"🟢 OK: eToro '{raw_sym}' -> Yahoo '{sym}' ({name}) | Prezzo: {last_price}$")
+                print(f"🟢 OK [{asset_type}]: eToro '{raw_sym}' -> Yahoo '{sym}' ({name}) | Prezzo: {last_price}")
                 success += 1
             else:
-                # Tentativo di Ricerca Intelligente per Nome se il ticker diretto fallisce
                 fallback_sym = search_yahoo_by_name(name)
                 if fallback_sym:
                     hist_fb = yf.Ticker(fallback_sym).history(period="5d")
                     if not hist_fb.empty:
                         last_price = round(float(hist_fb['Close'].iloc[-1]), 2)
-                        print(f"🟡 RECUPERATO con Ricerca Intelligente! '{name}' -> Yahoo '{fallback_sym}' | Prezzo: {last_price}$")
+                        print(f"🟡 RECUPERATO INTELIGENTE [{asset_type}]: '{name}' -> Yahoo '{fallback_sym}' | Prezzo: {last_price}")
                         success += 1
                         continue
 
-                print(f"🔴 FALLITO: eToro '{raw_sym}' -> Yahoo '{sym}' ({name})")
+                print(f"🔴 FALLITO [{asset_type}]: eToro '{raw_sym}' -> Yahoo '{sym}' ({name})")
                 failed += 1
         except Exception as e:
-            print(f"🔴 ERRORE: eToro '{raw_sym}' -> {e}")
+            print(f"🔴 ERRORE [{asset_type}]: eToro '{raw_sym}' -> {e}")
             failed += 1
 
-    print("=" * 75)
-    print(f"Riepilogo Test: {success} trovati, {failed} falliti su {len(sample)} testati.")
+    print("=" * 85)
+    print(f"Riepilogo Test Mondiale: {success} trovati, {failed} falliti su {len(sample)} testati.")
 
 if __name__ == "__main__":
     test_etoro_to_yahoo()
