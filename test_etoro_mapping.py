@@ -2,6 +2,7 @@ import urllib.request
 import urllib.parse
 import json
 import time
+import pandas as pd
 import yfinance as yf
 
 def clean_and_format_symbol(symbol):
@@ -116,7 +117,7 @@ def test_etoro_to_yahoo():
 
     sample = usa_stocks[:8] + europe_stocks[:12] + asia_stocks[:8] + etfs[:8]
     
-    print(f"\n2. Avvio Test su {len(sample)} asset (con pulizia valori NaN sui titoli .DE)...")
+    print(f"\n2. Avvio Test su {len(sample)} asset...")
     print("=" * 85)
 
     success, failed = 0, 0
@@ -128,14 +129,17 @@ def test_etoro_to_yahoo():
         name = item['name']
         asset_type = item['type']
 
-        time.sleep(0.15)
+        time.sleep(0.2)
 
         try:
             # STEP 1: Simbolo formattato
             if sym:
-                hist = yf.Ticker(sym).history(period="1mo")
-                close_series = hist['Close'].dropna() if not hist.empty else pd.Series()
-                
+                try:
+                    hist = yf.Ticker(sym).history(period="1mo")
+                    close_series = hist['Close'].dropna() if not hist.empty else pd.Series()
+                except Exception:
+                    close_series = pd.Series()
+
                 if not close_series.empty:
                     last_price = round(float(close_series.iloc[-1]), 2)
                     print(f"🟢 OK (Step 1 Simbolo): eToro '{raw_sym}' -> Yahoo '{sym}' ({name}) | Prezzo: {last_price}")
@@ -144,8 +148,12 @@ def test_etoro_to_yahoo():
 
             # STEP 2 (URI Avatar):
             if uri_sym and uri_sym != sym:
-                hist_uri = yf.Ticker(uri_sym).history(period="1mo")
-                close_uri = hist_uri['Close'].dropna() if not hist_uri.empty else pd.Series()
+                try:
+                    hist_uri = yf.Ticker(uri_sym).history(period="1mo")
+                    close_uri = hist_uri['Close'].dropna() if not hist_uri.empty else pd.Series()
+                except Exception:
+                    close_uri = pd.Series()
+
                 if not close_uri.empty:
                     last_price = round(float(close_uri.iloc[-1]), 2)
                     print(f"🔵 RECUPERATO da URI Avatar (Step 2): eToro '{raw_sym}' -> Yahoo '{uri_sym}' ({name}) | Prezzo: {last_price}")
@@ -155,8 +163,12 @@ def test_etoro_to_yahoo():
             # STEP 3 (Nome):
             fallback_sym = search_yahoo_by_name(name)
             if fallback_sym:
-                hist_fb = yf.Ticker(fallback_sym).history(period="1mo")
-                close_fb = hist_fb['Close'].dropna() if not hist_fb.empty else pd.Series()
+                try:
+                    hist_fb = yf.Ticker(fallback_sym).history(period="1mo")
+                    close_fb = hist_fb['Close'].dropna() if not hist_fb.empty else pd.Series()
+                except Exception:
+                    close_fb = pd.Series()
+
                 if not close_fb.empty:
                     last_price = round(float(close_fb.iloc[-1]), 2)
                     print(f"🟡 RECUPERATO da Nome (Step 3): '{name}' -> Yahoo '{fallback_sym}' | Prezzo: {last_price}")
@@ -171,7 +183,7 @@ def test_etoro_to_yahoo():
             failed += 1
 
     print("=" * 85)
-    print(f"Riepilogo Test Mondiale: {success} trovati, {failed} falliti su {len(sample)} testati.")
+    print(f"Riepilogo Test Mondiale: {success} trovati con successo, {failed} falliti su {len(sample)} testati.")
 
 if __name__ == "__main__":
     test_etoro_to_yahoo()
