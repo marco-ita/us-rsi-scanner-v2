@@ -11,16 +11,13 @@ def clean_and_format_symbol(symbol):
     if ".CVR" in symbol or ".OLD" in symbol or "OLD" in symbol:
         return None
 
-    # 1. Rimozione .US dai titoli USA
     if symbol.endswith(".US"):
         symbol = symbol[:-3]
 
-    # 2. Classi azionarie USA (es. BRK.B -> BRK-B)
     parts = symbol.split(".")
     if len(parts) == 2 and len(parts[1]) == 1 and parts[1].isalpha():
         return f"{parts[0]}-{parts[1]}"
 
-    # 3. Mappatura borse internazionali
     suffix_mapping = {
         ".MI": ".MI", ".DE": ".DE", ".PA": ".PA", ".L": ".L",
         ".AS": ".AS", ".MC": ".MC", ".SW": ".SW",
@@ -35,10 +32,6 @@ def clean_and_format_symbol(symbol):
     return symbol
 
 def extract_symbol_from_images(images_list):
-    """
-    IDEA MARCO (LIVELLO 2): Estrae lo slug reale del ticker direttamente dalle URI delle immagini eToro.
-    Es. da '.../market-avatars/lin.de/50x50.png' estrae 'LIN.DE'.
-    """
     if not images_list or not isinstance(images_list, list):
         return None
     
@@ -54,9 +47,6 @@ def extract_symbol_from_images(images_list):
     return None
 
 def search_yahoo_by_name(company_name):
-    """
-    LIVELLO 3: Fallback finale su Yahoo pulendo i suffissi legali.
-    """
     if not company_name:
         return None
 
@@ -126,7 +116,7 @@ def test_etoro_to_yahoo():
 
     sample = usa_stocks[:8] + europe_stocks[:12] + asia_stocks[:8] + etfs[:8]
     
-    print(f"\n2. Avvio Test con Architettura a 3 Livelli su {len(sample)} asset...")
+    print(f"\n2. Avvio Test su {len(sample)} asset (con pulizia valori NaN sui titoli .DE)...")
     print("=" * 85)
 
     success, failed = 0, 0
@@ -140,31 +130,35 @@ def test_etoro_to_yahoo():
 
         time.sleep(0.15)
 
-        # STEP 1: Tentativo con il SymbolFull formattato
         try:
+            # STEP 1: Simbolo formattato
             if sym:
-                hist = yf.Ticker(sym).history(period="5d")
-                if not hist.empty:
-                    last_price = round(float(hist['Close'].iloc[-1]), 2)
+                hist = yf.Ticker(sym).history(period="1mo")
+                close_series = hist['Close'].dropna() if not hist.empty else pd.Series()
+                
+                if not close_series.empty:
+                    last_price = round(float(close_series.iloc[-1]), 2)
                     print(f"🟢 OK (Step 1 Simbolo): eToro '{raw_sym}' -> Yahoo '{sym}' ({name}) | Prezzo: {last_price}")
                     success += 1
                     continue
 
-            # STEP 2 (IDEA MARCO): Tentativo con lo Slug estratto dalla URI delle immagini!
+            # STEP 2 (URI Avatar):
             if uri_sym and uri_sym != sym:
-                hist_uri = yf.Ticker(uri_sym).history(period="5d")
-                if not hist_uri.empty:
-                    last_price = round(float(hist_uri['Close'].iloc[-1]), 2)
-                    print(f"🔵 RECUPERATO da URI Avatar (Step 2): eToro '{raw_sym}' -> Trovato da URI '{uri_sym}' ({name}) | Prezzo: {last_price}")
+                hist_uri = yf.Ticker(uri_sym).history(period="1mo")
+                close_uri = hist_uri['Close'].dropna() if not hist_uri.empty else pd.Series()
+                if not close_uri.empty:
+                    last_price = round(float(close_uri.iloc[-1]), 2)
+                    print(f"🔵 RECUPERATO da URI Avatar (Step 2): eToro '{raw_sym}' -> Yahoo '{uri_sym}' ({name}) | Prezzo: {last_price}")
                     success += 1
                     continue
 
-            # STEP 3: Fallback finale per Nome
+            # STEP 3 (Nome):
             fallback_sym = search_yahoo_by_name(name)
             if fallback_sym:
-                hist_fb = yf.Ticker(fallback_sym).history(period="5d")
-                if not hist_fb.empty:
-                    last_price = round(float(hist_fb['Close'].iloc[-1]), 2)
+                hist_fb = yf.Ticker(fallback_sym).history(period="1mo")
+                close_fb = hist_fb['Close'].dropna() if not hist_fb.empty else pd.Series()
+                if not close_fb.empty:
+                    last_price = round(float(close_fb.iloc[-1]), 2)
                     print(f"🟡 RECUPERATO da Nome (Step 3): '{name}' -> Yahoo '{fallback_sym}' | Prezzo: {last_price}")
                     success += 1
                     continue
