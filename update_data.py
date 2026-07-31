@@ -35,7 +35,7 @@ def calculate_rsi(series, window=14):
     return 100 - (100 / (1 + rs))
 
 # ---------------------------------------------------------
-# NUOVE FUNZIONI DI MAPPATURA E CATALOGO ETORO GLOBALE
+# MAPPATURA E CATALOGO ETORO GLOBALE
 # ---------------------------------------------------------
 
 def clean_and_format_symbol(symbol):
@@ -118,7 +118,7 @@ def get_etoro_catalog():
         return {}
 
 # ---------------------------------------------------------
-# ESECUZIONE DELLA SCANSIONE (MANTENUTA INTEGRALMENTE DALLA TUA STRUTTURA)
+# ESECUZIONE DELLA SCANSIONE CON PERIOD="2Y" E ANTI-RATE-LIMIT
 # ---------------------------------------------------------
 
 def run_update():
@@ -128,86 +128,97 @@ def run_update():
         return
 
     tickers = list(ticker_map.keys())
-    print(f"Inizio scansione globale su {len(tickers)} asset...")
+    print(f"Inizio scansione globale su {len(tickers)} asset (Storico 2 Anni)...")
 
     results = []
     
-    chunk_size = 100
+    chunk_size = 40
     ticker_chunks = [tickers[i:i + chunk_size] for i in range(0, len(tickers), chunk_size)]
 
-    for chunk in ticker_chunks:
-        try:
-            data = yf.download(chunk, period="5y", interval="1d", auto_adjust=False, group_by='ticker', progress=False)
+    for chunk_idx, chunk in enumerate(ticker_chunks, 1):
+        # Micro-pausa per evitare il blocco IP
+        time.sleep(1.2)
+        
+        # Gestione Retry (fino a 3 tentativi)
+        data = None
+        for attempt in range(3):
+            try:
+                # Impostato a 2 Anni per bilanciare storicità e leggerezza
+                data = yf.download(chunk, period="2y", interval="1d", auto_adjust=False, group_by='ticker', progress=False)
+                if data is not None and not data.empty:
+                    break
+            except Exception:
+                time.sleep(2.5)
 
-            for ticker in chunk:
-                try:
-                    if isinstance(data.columns, pd.MultiIndex):
-                        if ticker not in data.columns.levels[0]:
-                            continue
-                        df = data[ticker].dropna(how='all').copy()
-                    else:
-                        df = data.dropna(how='all').copy()
+        if data is None or data.empty:
+            continue
 
-                    # Pulizia dei prezzi Close per evitare NaN su candele in corso di borse europee
-                    close = df['Close'].dropna() if 'Close' in df else pd.Series()
-
-                    if close.empty or len(close) < 200:
+        for ticker in chunk:
+            try:
+                if isinstance(data.columns, pd.MultiIndex):
+                    if ticker not in data.columns.levels[0]:
                         continue
+                    df = data[ticker].dropna(how='all').copy()
+                else:
+                    df = data.dropna(how='all').copy()
 
-                    # 1. Calcolo RSI
-                    rsi_series = calculate_rsi(close, 14)
-                    rsi_val = rsi_series.iloc[-1]
-                    
-                    # FILTRO OPERATIVO: Escludiamo chi ha RSI compreso tra 30.1 e 69.9
-                    if 30 < rsi_val < 70:
-                        continue
+                close = df['Close'].dropna() if 'Close' in df else pd.Series()
 
-                    # 2. Calcolo SMMA 40 e SMMA 200 (Formula eToro)
-                    smma_40_series = calculate_smma(close, 40)
-                    smma_200_series = calculate_smma(close, 200)
-
-                    last_close = close.iloc[-1]
-                    smma_40_val = smma_40_series.iloc[-1]
-                    smma_200_val = smma_200_series.iloc[-1]
-
-                    # 3. Pendenza / Trend eToro (confrontato con 5 giorni fa - LOGICA ORIGINALE)
-                    smma_40_prev = smma_40_series.iloc[-6]
-                    smma_200_prev = smma_200_series.iloc[-6]
-
-                    trend_40 = "In Declino 🔴" if smma_40_val < smma_40_prev else "In Crescita 🟢"
-                    trend_200 = "In Declino 🔴" if smma_200_val < smma_200_prev else "In Crescita 🟢"
-
-                    # 4. Posizione Medie eToro
-                    pos_medie = "SMA 40 SOPRA SMA 200 🟢" if smma_40_val > smma_200_val else "SMA 40 SOTTO SMA 200 🔴"
-
-                    # 5. Stato RSI
-                    if rsi_val <= 30:
-                        rsi_state = "Ipervenduto (RSI ≤ 30) 🟢"
-                    else:
-                        rsi_state = "Ipercomprato (RSI ≥ 70) 🔴"
-
-                    asset_name = ticker_map.get(ticker, ticker)
-
-                    results.append({
-                        'Ticker': ticker,
-                        'Nome Asset': asset_name,
-                        'Prezzo ($)': round(float(last_close), 2),
-                        'RSI 14': round(float(rsi_val), 2),
-                        'Stato RSI': rsi_state,
-                        'SMA 40 ($)': round(float(smma_40_val), 2),
-                        'Trend SMA 40': trend_40,
-                        'SMA 200 ($)': round(float(smma_200_val), 2),
-                        'Trend SMA 200': trend_200,
-                        'Posizione Medie': pos_medie
-                    })
-                except Exception as e_inner:
+                if close.empty or len(close) < 200:
                     continue
-        except Exception as e_chunk:
-            print(f"Errore nell'elaborazione del blocco: {e_chunk}")
+
+                # 1. Calcolo RSI
+                rsi_series = calculate_rsi(close, 14)
+                rsi_val = rsi_series.iloc[-1]
+                
+                # FILTRO OPERATIVO: Escludiamo chi ha RSI compreso tra 30.1 e 69.9
+                if 30 < rsi_val < 70:
+                    continue
+
+                # 2. Calcolo SMMA 40 e SMMA 200 (Formula eToro)
+                smma_40_series = calculate_smma(close, 40)
+                smma_200_series = calculate_smma(close, 200)
+
+                last_close = close.iloc[-1]
+                smma_40_val = smma_40_series.iloc[-1]
+                smma_200_val = smma_200_series.iloc[-1]
+
+                # 3. Pendenza / Trend eToro (confrontato con 5 giorni fa)
+                smma_40_prev = smma_40_series.iloc[-6]
+                smma_200_prev = smma_200_series.iloc[-6]
+
+                trend_40 = "In Declino 🔴" if smma_40_val < smma_40_prev else "In Crescita 🟢"
+                trend_200 = "In Declino 🔴" if smma_200_val < smma_200_prev else "In Crescita 🟢"
+
+                # 4. Posizione Medie eToro
+                pos_medie = "SMA 40 SOPRA SMA 200 🟢" if smma_40_val > smma_200_val else "SMA 40 SOTTO SMA 200 🔴"
+
+                # 5. Stato RSI
+                if rsi_val <= 30:
+                    rsi_state = "Ipervenduto (RSI ≤ 30) 🟢"
+                else:
+                    rsi_state = "Ipercomprato (RSI ≥ 70) 🔴"
+
+                asset_name = ticker_map.get(ticker, ticker)
+
+                results.append({
+                    'Ticker': ticker,
+                    'Nome Asset': asset_name,
+                    'Prezzo ($)': round(float(last_close), 2),
+                    'RSI 14': round(float(rsi_val), 2),
+                    'Stato RSI': rsi_state,
+                    'SMA 40 ($)': round(float(smma_40_val), 2),
+                    'Trend SMA 40': trend_40,
+                    'SMA 200 ($)': round(float(smma_200_val), 2),
+                    'Trend SMA 200': trend_200,
+                    'Posizione Medie': pos_medie
+                })
+            except Exception:
+                continue
 
     res_df = pd.DataFrame(results)
     res_df.to_csv('market_data.csv', index=False)
-    print(f"Scansione completata con successo! Trovati {len(results)} asset in condizione estrema (RSI ≤ 30 o RSI ≥ 70).")
+    print(f"Scansione completata! Trovati {len(results)} asset in condizione estrema e salvati in market_data.csv.")
 
 if __name__ == "__main__":
     run_update()
