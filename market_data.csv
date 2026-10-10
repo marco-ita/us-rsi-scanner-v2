@@ -1,74 +1,288 @@
 Ticker,Nome Asset,Prezzo ($),RSI 14,Stato RSI,SMA 40 ($),Trend SMA 40,SMA 200 ($),Trend SMA 200,Posizione Medie
-BAC,Bank of America Corp,53.61,24.51,Ipervenduto (RSI ≤ 30) 🟢,58.23,In Declino 🔴,52.78,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-HSBC,HSBC-ADR,92.61,28.23,Ipervenduto (RSI ≤ 30) 🟢,99.46,In Declino 🔴,81.82,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-DB,Deutsche-Bank,33.63,27.34,Ipervenduto (RSI ≤ 30) 🟢,36.61,In Declino 🔴,32.6,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+T,AT&T Inc,22.18,25.95,Ipervenduto (RSI ≤ 30) 🟢,24.62,In Declino 🔴,25.29,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+VZ,Verizon,41.65,21.75,Ipervenduto (RSI ≤ 30) 🟢,47.2,In Declino 🔴,45.06,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+HSBC,HSBC-ADR,92.98,29.81,Ipervenduto (RSI ≤ 30) 🟢,99.3,In Declino 🔴,81.89,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+DB,Deutsche-Bank,33.68,27.88,Ipervenduto (RSI ≤ 30) 🟢,36.54,In Declino 🔴,32.61,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
 MTBLY,Moatable Inc-ADR,0.67,94.0,Ipercomprato (RSI ≥ 70) 🔴,0.62,In Crescita 🟢,1.36,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-OPCH,"Option Care Health, Inc",31.05,83.77,Ipercomprato (RSI ≥ 70) 🔴,24.0,In Crescita 🟢,26.87,In Crescita 🟢,SMA 40 SOTTO SMA 200 🔴
-PBR,Petroleo Brasileiro SA Petrobras-ADR,24.69,76.96,Ipercomprato (RSI ≥ 70) 🔴,19.87,In Crescita 🟢,16.49,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-LVS,Las Vegas Sands Corp,36.1,22.42,Ipervenduto (RSI ≤ 30) 🟢,43.92,In Declino 🔴,49.72,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-AGNC,AGNC Investment Corp,8.68,24.38,Ipervenduto (RSI ≤ 30) 🟢,10.2,In Declino 🔴,10.27,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-MOS,Mosaic Co,19.73,26.67,Ipervenduto (RSI ≤ 30) 🟢,23.2,In Declino 🔴,25.92,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-TVRD,Tvardi Therapeutics Inc,1.08,28.73,Ipervenduto (RSI ≤ 30) 🟢,2.05,In Declino 🔴,8.1,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-CRBP,Corbus Pharmaceuticals Holding,5.27,20.95,Ipervenduto (RSI ≤ 30) 🟢,8.55,In Declino 🔴,9.67,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-NXH,Neighborhood Intelligence Inc,1.72,11.51,Ipervenduto (RSI ≤ 30) 🟢,4.05,In Declino 🔴,5.69,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-BYND,Beyond Meat Inc.,7.73,27.48,Ipervenduto (RSI ≤ 30) 🟢,14.17,In Declino 🔴,45.87,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-MBG.DE,Mercedes-Benz Group AG,39.83,28.44,Ipervenduto (RSI ≤ 30) 🟢,45.35,In Declino 🔴,51.19,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-BMW.DE,Bayerische Motoren Werke Aktiengesellschaft,53.66,29.18,Ipervenduto (RSI ≤ 30) 🟢,61.25,In Declino 🔴,73.69,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-ACA.PA,Credit Agricole S.A.,16.52,24.17,Ipervenduto (RSI ≤ 30) 🟢,18.11,In Declino 🔴,17.02,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-EN.PA,Bouygues SA,40.73,28.15,Ipervenduto (RSI ≤ 30) 🟢,45.48,In Declino 🔴,43.46,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-GLE.PA,Societe Generale Group,63.94,29.1,Ipervenduto (RSI ≤ 30) 🟢,73.41,In Declino 🔴,62.69,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-MTS.MC,ArcelorMittal,55.62,29.59,Ipervenduto (RSI ≤ 30) 🟢,60.24,In Declino 🔴,45.88,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-SGO.PA,Compagnie de Saint-Gobain S.A.,64.76,28.5,Ipervenduto (RSI ≤ 30) 🟢,74.69,In Declino 🔴,82.35,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-LDO.MI,Leonardo SpA,46.01,28.91,Ipervenduto (RSI ≤ 30) 🟢,51.82,In Declino 🔴,49.45,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-MB.MI,Mediobanca Banca Di Credito Fnnzr SpA,25.42,26.77,Ipervenduto (RSI ≤ 30) 🟢,26.91,In Declino 🔴,21.36,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-MFEB.MI,MFE - MediaForEurope NV,2.85,26.17,Ipervenduto (RSI ≤ 30) 🟢,3.42,In Declino 🔴,3.82,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-SFER.MI,Salvatore Ferragamo Company,6.92,27.74,Ipervenduto (RSI ≤ 30) 🟢,8.63,In Declino 🔴,7.63,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-TIT.MI,Telecom Italia S.p.A.,5.84,15.2,Ipervenduto (RSI ≤ 30) 🟢,7.32,In Declino 🔴,5.82,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-FER.MC,Ferrovial NV,45.02,26.83,Ipervenduto (RSI ≤ 30) 🟢,52.2,In Declino 🔴,52.03,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-TDTH,Trident Digital Tech Holdings Ltd,0.89,26.97,Ipervenduto (RSI ≤ 30) 🟢,2.13,In Declino 🔴,14.1,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-FALN,iShares Fallen Angels USD Bond ETF,25.88,28.47,Ipervenduto (RSI ≤ 30) 🟢,26.66,In Declino 🔴,26.98,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-EWQ,iShares MSCI France ETF ,41.32,24.17,Ipervenduto (RSI ≤ 30) 🟢,44.81,In Declino 🔴,43.83,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-CMCSA,Comcast Corp,21.21,28.01,Ipervenduto (RSI ≤ 30) 🟢,24.24,In Declino 🔴,28.2,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-GS,Goldman Sachs Group Inc,882.59,29.07,Ipervenduto (RSI ≤ 30) 🟢,983.35,In Declino 🔴,861.5,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-PSX,Phillips 66,281.6,74.73,Ipercomprato (RSI ≥ 70) 🔴,232.24,In Crescita 🟢,171.23,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-VLO,Valero Energy Corp,443.8,77.12,Ipercomprato (RSI ≥ 70) 🔴,344.59,In Crescita 🟢,233.05,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-FNMA,First Bancorp Inc Maine,4.02,26.41,Ipervenduto (RSI ≤ 30) 🟢,5.7,In Declino 🔴,7.13,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-MPC,Marathon Petroleum Corporation,463.34,79.58,Ipercomprato (RSI ≥ 70) 🔴,353.5,In Crescita 🟢,242.84,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-SHLD,Sears Holdings Corp,59.19,29.68,Ipervenduto (RSI ≤ 30) 🟢,63.68,In Declino 🔴,62.04,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-GD,General Dynamics Corp,329.9,27.88,Ipervenduto (RSI ≤ 30) 🟢,357.24,In Declino 🔴,335.38,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-IP,International Paper Co,31.88,29.28,Ipervenduto (RSI ≤ 30) 🟢,36.42,In Declino 🔴,41.52,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-WHR,Whirlpool Corp,29.16,25.09,Ipervenduto (RSI ≤ 30) 🟢,38.05,In Declino 🔴,64.05,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-PBF,PBF Energy Inc,89.34,70.85,Ipercomprato (RSI ≥ 70) 🔴,67.37,In Crescita 🟢,43.91,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-DINO,HF Sinclair Corp.,120.72,73.78,Ipercomprato (RSI ≥ 70) 🔴,95.75,In Crescita 🟢,65.14,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-BNY,Bank of New York Mellon Corp,143.61,28.29,Ipervenduto (RSI ≤ 30) 🟢,151.14,In Declino 🔴,123.87,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-TXT,Textron Inc,73.22,27.53,Ipervenduto (RSI ≤ 30) 🟢,83.26,In Declino 🔴,84.88,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-JEF,Jefferies Financial Group Inc,44.4,29.66,Ipervenduto (RSI ≤ 30) 🟢,51.03,In Declino 🔴,55.36,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-CAM,Schlumberger Ltd,24.03,27.57,Ipervenduto (RSI ≤ 30) 🟢,24.63,In Declino 🔴,24.99,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-MGM,MGM Resorts International,30.01,14.26,Ipervenduto (RSI ≤ 30) 🟢,39.56,In Declino 🔴,38.09,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-ACH,Accendra Health Inc,0.44,15.99,Ipervenduto (RSI ≤ 30) 🟢,1.65,In Declino 🔴,4.32,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-HRL,Hormel Foods Corp,19.42,27.04,Ipervenduto (RSI ≤ 30) 🟢,22.19,In Declino 🔴,24.8,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-VC,Visteon Corp,86.15,27.64,Ipervenduto (RSI ≤ 30) 🟢,99.52,In Declino 🔴,100.21,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-KKR,KKR & Co LP,89.56,29.84,Ipervenduto (RSI ≤ 30) 🟢,99.65,In Declino 🔴,112.78,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-NTAP,NetApp Inc,231.05,71.8,Ipercomprato (RSI ≥ 70) 🔴,185.14,In Crescita 🟢,137.06,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-MAT,Mattel Inc,16.58,72.29,Ipercomprato (RSI ≥ 70) 🔴,14.5,In Crescita 🟢,16.6,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-ABG,Asbury Automotive Group Inc,168.96,29.87,Ipervenduto (RSI ≤ 30) 🟢,199.4,In Declino 🔴,219.69,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-JBLU,JetBlue Airways Corp,3.92,28.66,Ipervenduto (RSI ≤ 30) 🟢,4.82,In Declino 🔴,5.15,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-WYNN,Wynn Resorts Ltd,75.29,25.76,Ipervenduto (RSI ≤ 30) 🟢,91.54,In Declino 🔴,100.69,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-BC,Brunswick Corp,62.35,25.42,Ipervenduto (RSI ≤ 30) 🟢,73.75,In Declino 🔴,72.66,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-WSO,Watsco Inc,282.23,28.37,Ipervenduto (RSI ≤ 30) 🟢,331.07,In Declino 🔴,391.94,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-CLLS,Cellectis SA-ADR,1.25,22.91,Ipervenduto (RSI ≤ 30) 🟢,2.53,In Declino 🔴,2.89,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-RMS.PA,Hermes International,1280.0,27.28,Ipervenduto (RSI ≤ 30) 🟢,1504.27,In Declino 🔴,1884.11,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-GMAB.CO,Genmab A/S,2487.0,74.15,Ipercomprato (RSI ≥ 70) 🔴,2081.08,In Crescita 🟢,1812.8,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-1816.HK,CGN Power Co Ltd,3.24,71.13,Ipercomprato (RSI ≥ 70) 🔴,3.0,In Crescita 🟢,2.97,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-LNZ.VI,Dormant 3480,12.5,11.49,Ipervenduto (RSI ≤ 30) 🟢,21.09,In Declino 🔴,24.36,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-PYT.VI,Polytec Holding AG,6.02,77.01,Ipercomprato (RSI ≥ 70) 🔴,4.98,In Crescita 🟢,3.91,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-OKTA,Okta Inc,220.21,71.73,Ipercomprato (RSI ≥ 70) 🔴,162.53,In Crescita 🟢,113.31,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-IRTC,IRhythm Holdings Inc,102.6,29.86,Ipervenduto (RSI ≤ 30) 🟢,116.45,In Declino 🔴,127.55,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-PRG,Prog Holdings Inc,30.9,28.6,Ipervenduto (RSI ≤ 30) 🟢,37.04,In Declino 🔴,35.46,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-ATHXQ,Athersys Inc,0.0,0.01,Ipervenduto (RSI ≤ 30) 🟢,0.0,In Declino 🔴,0.0,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
-IVR,Invesco Mortgage Capital Inc,5.68,19.97,Ipervenduto (RSI ≤ 30) 🟢,7.06,In Declino 🔴,7.78,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-MFA,MFA Financial Inc,7.18,16.03,Ipervenduto (RSI ≤ 30) 🟢,8.72,In Declino 🔴,9.54,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-SAFE,Safehold Inc,12.1,29.75,Ipervenduto (RSI ≤ 30) 🟢,14.35,In Declino 🔴,15.51,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-NPWR,Net Power Inc,1.24,26.32,Ipervenduto (RSI ≤ 30) 🟢,1.67,In Declino 🔴,2.89,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
-MCHB,Mechanics Bancorp,14.51,26.42,Ipervenduto (RSI ≤ 30) 🟢,15.52,In Declino 🔴,14.25,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
-PUK,Prudential plc-ADR,23.88,26.77,Ipervenduto (RSI ≤ 30) 🟢,27.1,In Declino 🔴,26.52,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+OPCH,"Option Care Health, Inc",31.07,83.8,Ipercomprato (RSI ≥ 70) 🔴,24.18,In Crescita 🟢,26.89,In Crescita 🟢,SMA 40 SOTTO SMA 200 🔴
+PBR,Petroleo Brasileiro SA Petrobras-ADR,25.3,79.05,Ipercomprato (RSI ≥ 70) 🔴,20.0,In Crescita 🟢,16.54,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+LVS,Las Vegas Sands Corp,36.17,23.25,Ipervenduto (RSI ≤ 30) 🟢,43.73,In Declino 🔴,49.65,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AGNC,AGNC Investment Corp,8.67,24.24,Ipervenduto (RSI ≤ 30) 🟢,10.16,In Declino 🔴,10.26,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SBUX,Starbucks Corp,90.75,28.83,Ipervenduto (RSI ≤ 30) 🟢,100.05,In Declino 🔴,96.67,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+MOS,Mosaic Co,18.74,23.09,Ipervenduto (RSI ≤ 30) 🟢,23.09,In Declino 🔴,25.88,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+TVRD,Tvardi Therapeutics Inc,1.03,27.15,Ipervenduto (RSI ≤ 30) 🟢,2.02,In Declino 🔴,8.08,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+PHIN,Phinia Inc,57.83,29.67,Ipervenduto (RSI ≤ 30) 🟢,68.4,In Declino 🔴,63.85,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+CRBP,Corbus Pharmaceuticals Holding,5.38,23.25,Ipervenduto (RSI ≤ 30) 🟢,8.47,In Declino 🔴,9.64,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NXH,Neighborhood Intelligence Inc,1.69,11.31,Ipervenduto (RSI ≤ 30) 🟢,3.99,In Declino 🔴,5.66,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+BYND,Beyond Meat Inc.,7.7,27.32,Ipervenduto (RSI ≤ 30) 🟢,14.01,In Declino 🔴,45.6,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+BAYN.DE,Bayer AG,42.59,26.95,Ipervenduto (RSI ≤ 30) 🟢,46.59,In Declino 🔴,37.22,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+MBG.DE,Mercedes-Benz Group AG,39.03,25.57,Ipervenduto (RSI ≤ 30) 🟢,45.2,In Declino 🔴,51.12,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+BMW.DE,Bayerische Motoren Werke Aktiengesellschaft,52.18,25.3,Ipervenduto (RSI ≤ 30) 🟢,61.03,In Declino 🔴,73.59,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ACA.PA,Credit Agricole S.A.,16.22,21.64,Ipervenduto (RSI ≤ 30) 🟢,18.06,In Declino 🔴,17.02,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+BNP.PA,BNP Paribas SA,89.2,27.63,Ipervenduto (RSI ≤ 30) 🟢,100.35,In Declino 🔴,87.66,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+EN.PA,Bouygues SA,40.63,27.63,Ipervenduto (RSI ≤ 30) 🟢,45.36,In Declino 🔴,43.45,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+GLE.PA,Societe Generale Group,62.5,26.82,Ipervenduto (RSI ≤ 30) 🟢,73.14,In Declino 🔴,62.7,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+KER.PA,Kering SA,206.55,28.84,Ipervenduto (RSI ≤ 30) 🟢,243.47,In Declino 🔴,249.78,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MTS.MC,ArcelorMittal,54.22,26.78,Ipervenduto (RSI ≤ 30) 🟢,60.09,In Declino 🔴,45.93,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+SGO.PA,Compagnie de Saint-Gobain S.A.,64.76,28.5,Ipervenduto (RSI ≤ 30) 🟢,74.45,In Declino 🔴,82.27,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+LDO.MI,Leonardo SpA,45.8,28.27,Ipervenduto (RSI ≤ 30) 🟢,51.67,In Declino 🔴,49.45,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+ISP.MI,Intesa Sanpaolo Group,6.06,28.66,Ipervenduto (RSI ≤ 30) 🟢,6.48,In Declino 🔴,5.67,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+MB.MI,Mediobanca Banca Di Credito Fnnzr SpA,24.79,23.86,Ipervenduto (RSI ≤ 30) 🟢,26.86,In Declino 🔴,21.38,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+MFEB.MI,MFE - MediaForEurope NV,2.83,25.5,Ipervenduto (RSI ≤ 30) 🟢,3.41,In Declino 🔴,3.81,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SFER.MI,Salvatore Ferragamo Company,6.82,26.5,Ipervenduto (RSI ≤ 30) 🟢,8.58,In Declino 🔴,7.62,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+TIT.MI,Telecom Italia S.p.A.,5.62,13.57,Ipervenduto (RSI ≤ 30) 🟢,7.27,In Declino 🔴,5.82,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BKT.MC,Bankinter,15.1,27.88,Ipervenduto (RSI ≤ 30) 🟢,15.94,In Declino 🔴,13.6,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+FER.MC,Ferrovial NV,44.3,24.47,Ipervenduto (RSI ≤ 30) 🟢,52.0,In Declino 🔴,52.0,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+EWQ,iShares MSCI France ETF ,41.52,27.51,Ipervenduto (RSI ≤ 30) 🟢,44.73,In Declino 🔴,43.82,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+ABBV,AbbVie Inc,276.47,71.23,Ipercomprato (RSI ≥ 70) 🔴,253.55,In Crescita 🟢,224.08,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+CMCSA,Comcast Corp,20.66,24.52,Ipervenduto (RSI ≤ 30) 🟢,24.15,In Declino 🔴,28.16,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FNMA,First Bancorp Inc Maine,4.04,27.17,Ipervenduto (RSI ≤ 30) 🟢,5.66,In Declino 🔴,7.12,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MPC,Marathon Petroleum Corporation,455.03,73.49,Ipercomprato (RSI ≥ 70) 🔴,356.04,In Crescita 🟢,243.89,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+WHR,Whirlpool Corp,28.83,24.06,Ipervenduto (RSI ≤ 30) 🟢,37.82,In Declino 🔴,63.87,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+DINO,HF Sinclair Corp.,121.3,74.37,Ipercomprato (RSI ≥ 70) 🔴,96.39,In Crescita 🟢,65.41,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+PCAR,Paccar Inc,108.04,28.79,Ipervenduto (RSI ≤ 30) 🟢,119.76,In Declino 🔴,113.74,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+BNY,Bank of New York Mellon Corp,142.71,26.8,Ipervenduto (RSI ≤ 30) 🟢,150.93,In Declino 🔴,123.97,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+PNC,PNC Financial Services Group Inc,219.21,29.43,Ipervenduto (RSI ≤ 30) 🟢,234.82,In Declino 🔴,215.61,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+JEF,Jefferies Financial Group Inc,44.38,29.59,Ipervenduto (RSI ≤ 30) 🟢,50.86,In Declino 🔴,55.31,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MGM,MGM Resorts International,29.27,12.96,Ipervenduto (RSI ≤ 30) 🟢,39.3,In Declino 🔴,38.04,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+ACH,Accendra Health Inc,0.43,15.74,Ipervenduto (RSI ≤ 30) 🟢,1.62,In Declino 🔴,4.3,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+HRL,Hormel Foods Corp,19.19,24.96,Ipervenduto (RSI ≤ 30) 🟢,22.11,In Declino 🔴,24.77,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GME,GameStop Corp.,26.56,72.5,Ipercomprato (RSI ≥ 70) 🔴,21.91,In Crescita 🟢,23.16,In Crescita 🟢,SMA 40 SOTTO SMA 200 🔴
+FNF,Fidelity National Financial Inc,38.8,28.44,Ipervenduto (RSI ≤ 30) 🟢,45.4,In Declino 🔴,51.3,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CHTR,Charter Communications Inc,103.38,27.87,Ipervenduto (RSI ≤ 30) 🟢,137.64,In Declino 🔴,219.69,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+VC,Visteon Corp,85.43,26.42,Ipervenduto (RSI ≤ 30) 🟢,99.17,In Declino 🔴,100.13,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+WY,Weyerhaeuser Co,19.1,29.91,Ipervenduto (RSI ≤ 30) 🟢,22.39,In Declino 🔴,24.81,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+OSK,Oshkosh Corp,125.23,29.24,Ipervenduto (RSI ≤ 30) 🟢,142.97,In Declino 🔴,134.39,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+LKQ,LKQ Corp,21.84,29.83,Ipervenduto (RSI ≤ 30) 🟢,24.67,In Declino 🔴,30.21,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NTAP,NetApp Inc,237.15,74.56,Ipercomprato (RSI ≥ 70) 🔴,186.44,In Crescita 🟢,137.54,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+MAT,Mattel Inc,16.69,72.93,Ipercomprato (RSI ≥ 70) 🔴,14.56,In Crescita 🟢,16.6,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ABG,Asbury Automotive Group Inc,167.6,28.97,Ipervenduto (RSI ≤ 30) 🟢,198.6,In Declino 🔴,219.45,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+JBLU,JetBlue Airways Corp,3.84,26.68,Ipervenduto (RSI ≤ 30) 🟢,4.8,In Declino 🔴,5.14,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+WYNN,Wynn Resorts Ltd,75.15,25.53,Ipervenduto (RSI ≤ 30) 🟢,91.13,In Declino 🔴,100.55,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+JLL,Jones Lang Lasalle Inc,299.87,29.26,Ipervenduto (RSI ≤ 30) 🟢,333.07,In Declino 🔴,308.48,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+PII,Polaris Industries Inc,51.6,29.38,Ipervenduto (RSI ≤ 30) 🟢,60.98,In Declino 🔴,60.35,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+GPK,Graphic Packaging Holding Co,8.35,25.24,Ipervenduto (RSI ≤ 30) 🟢,10.22,In Declino 🔴,15.25,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+BC,Brunswick Corp,61.48,23.66,Ipervenduto (RSI ≤ 30) 🟢,73.45,In Declino 🔴,72.58,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+WSO,Watsco Inc,279.9,27.23,Ipervenduto (RSI ≤ 30) 🟢,329.79,In Declino 🔴,391.36,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CLLS,Cellectis SA-ADR,1.26,23.59,Ipervenduto (RSI ≤ 30) 🟢,2.5,In Declino 🔴,2.89,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+RMS.PA,Hermes International,1262.5,25.28,Ipervenduto (RSI ≤ 30) 🟢,1498.23,In Declino 🔴,1881.23,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+DBK.DE,Deutsche Bank Aktiengesellschaft,29.66,29.88,Ipervenduto (RSI ≤ 30) 🟢,31.95,In Declino 🔴,28.45,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+FFIN,First Financial Bankshares Inc,30.77,28.04,Ipervenduto (RSI ≤ 30) 🟢,33.07,In Declino 🔴,33.69,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GJF.OL,Gjensidige Forsikring,247.6,23.79,Ipervenduto (RSI ≤ 30) 🟢,270.11,In Declino 🔴,262.56,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+STB.OL,Storebrand,184.4,25.65,Ipervenduto (RSI ≤ 30) 🟢,194.53,In Declino 🔴,169.08,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+VOLV-A.ST,Volvo AB ser. A,310.2,29.57,Ipervenduto (RSI ≤ 30) 🟢,333.58,In Declino 🔴,311.68,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+IBCK.DE,iShares Edge S&P 500 Minimum Volatility UCITS ETF,106.08,77.32,Ipercomprato (RSI ≥ 70) 🔴,101.32,In Crescita 🟢,95.57,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BOH,Bank of Hawaii Corp,66.81,27.47,Ipervenduto (RSI ≤ 30) 🟢,75.27,In Declino 🔴,73.59,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+PETS,PetMed Express,1.29,17.12,Ipervenduto (RSI ≤ 30) 🟢,1.75,In Declino 🔴,2.65,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+TU,TELUS Corporation,7.72,24.06,Ipervenduto (RSI ≤ 30) 🟢,9.67,In Declino 🔴,12.63,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+RCI,Rogers Communications Inc,29.78,23.71,Ipervenduto (RSI ≤ 30) 🟢,34.38,In Declino 🔴,34.59,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+HE,Hawaiian Electric Industries Inc,8.76,21.32,Ipervenduto (RSI ≤ 30) 🟢,11.22,In Declino 🔴,12.2,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+KGX.DE,KION GROUP,33.5,25.3,Ipervenduto (RSI ≤ 30) 🟢,41.35,In Declino 🔴,46.16,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SHA0.DE,Schaeffler AG,6.01,29.17,Ipervenduto (RSI ≤ 30) 🟢,7.41,In Declino 🔴,7.1,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+SGL.DE,SGL Carbon,5.35,77.78,Ipercomprato (RSI ≥ 70) 🔴,4.38,In Crescita 🟢,4.01,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+EVK.DE,Evonik,20.98,79.26,Ipercomprato (RSI ≥ 70) 🔴,18.15,In Crescita 🟢,16.97,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+DWNI.DE,Deutsche Wohnen,14.94,23.84,Ipervenduto (RSI ≤ 30) 🟢,17.36,In Declino 🔴,20.16,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GYC.DE,Grand City Properties,6.66,15.52,Ipervenduto (RSI ≤ 30) 🟢,8.62,In Declino 🔴,9.88,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+TEG.DE,TAG Immobilien,10.25,25.51,Ipervenduto (RSI ≤ 30) 🟢,12.43,In Declino 🔴,13.78,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GBF.DE,Bilfinger,53.95,25.98,Ipervenduto (RSI ≤ 30) 🟢,74.21,In Declino 🔴,83.96,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SZG.DE,Salzgitter,44.04,29.83,Ipervenduto (RSI ≤ 30) 🟢,52.28,In Declino 🔴,41.11,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+UTDI.DE,United Internet,23.3,23.75,Ipervenduto (RSI ≤ 30) 🟢,25.47,In Declino 🔴,24.57,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+DEQ.DE,Deutsche EuroShop SE,15.62,29.16,Ipervenduto (RSI ≤ 30) 🟢,18.12,In Declino 🔴,18.92,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ZIL2.DE,ElringKlinger,4.74,29.84,Ipervenduto (RSI ≤ 30) 🟢,5.15,In Declino 🔴,4.82,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+VNA.DE,Vonovia SE,16.2,24.76,Ipervenduto (RSI ≤ 30) 🟢,19.34,In Declino 🔴,23.76,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AT1.DE,Aroundtown SA,1.47,13.85,Ipervenduto (RSI ≤ 30) 🟢,1.97,In Declino 🔴,2.5,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+DWS.DE,DWS Group GmbH & Co KGaA,66.0,26.12,Ipervenduto (RSI ≤ 30) 🟢,70.37,In Declino 🔴,59.2,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+GLJ.DE,GRENKE AG,9.73,26.55,Ipervenduto (RSI ≤ 30) 🟢,11.49,In Declino 🔴,13.81,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+JUN3.DE,Jungheinrich Aktie,21.06,23.59,Ipervenduto (RSI ≤ 30) 🟢,24.82,In Declino 🔴,28.29,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+XUTC.DE,Xtrackers MSCI USA Information Technology UCITS ETF ,164.76,74.57,Ipercomprato (RSI ≥ 70) 🔴,149.17,In Crescita 🟢,127.19,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+ICGB.DE,iShares China CNY Bond UCITS ETF,5.14,73.95,Ipercomprato (RSI ≥ 70) 🔴,4.96,In Crescita 🟢,4.83,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+UHAL-B,U-Haul Holding Co,50.37,21.57,Ipervenduto (RSI ≤ 30) 🟢,56.53,In Declino 🔴,54.65,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+SCLX,Scilex Holding Company,2.92,18.63,Ipervenduto (RSI ≤ 30) 🟢,5.47,In Declino 🔴,7.16,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FG,F&G Annuities & Life Inc,19.26,23.74,Ipervenduto (RSI ≤ 30) 🟢,24.65,In Declino 🔴,29.86,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ZPDT.DE,SS SPDR S&P U.S. TECHNOLOGY SELECT SECTOR   UCITS ETF,179.54,75.9,Ipercomprato (RSI ≥ 70) 🔴,162.59,In Crescita 🟢,138.46,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+IS3Q.DE,iShares Edge MSCI World Quality Factor UCITS ETF,80.41,73.72,Ipercomprato (RSI ≥ 70) 🔴,77.18,In Crescita 🟢,71.09,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+QDVE.DE,iShares S&P 500 Information Technology Sector UCITS ETF,49.08,75.79,Ipercomprato (RSI ≥ 70) 🔴,44.44,In Crescita 🟢,37.89,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+VOLV-B.ST,Volvo AB ser. B,309.5,28.47,Ipervenduto (RSI ≤ 30) 🟢,333.32,In Declino 🔴,311.42,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+IS0S.DE,iShares Emerging Asia Local Govt Bond UCITS ETF,74.13,72.97,Ipercomprato (RSI ≥ 70) 🔴,72.4,In Crescita 🟢,74.71,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CBU5.DE,iShares iBonds Dec 2028 Term $ Corp UCITS ETF,104.74,74.07,Ipercomprato (RSI ≥ 70) 🔴,102.04,In Crescita 🟢,100.64,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+SXRH.DE,iShares TIPS 0-5 UCITS ETF,4.35,71.89,Ipercomprato (RSI ≥ 70) 🔴,4.26,In Crescita 🟢,4.34,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+OTP.BD,OTP Bank Nyrt,37870.0,23.69,Ipervenduto (RSI ≤ 30) 🟢,44169.87,In Declino 🔴,36773.82,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+KOMB.PR,Komercní banka a.s.,963.0,19.41,Ipervenduto (RSI ≤ 30) 🟢,1038.62,In Declino 🔴,1047.8,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+PBR-A,Petroleo Brasileiro ADR,22.47,76.95,Ipercomprato (RSI ≥ 70) 🔴,18.04,In Crescita 🟢,15.07,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BXP,Boston Properties Inc,59.05,29.56,Ipervenduto (RSI ≤ 30) 🟢,64.46,In Declino 🔴,66.31,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FFIV,F5 Networks Inc,479.83,70.01,Ipercomprato (RSI ≥ 70) 🔴,412.05,In Crescita 🟢,334.13,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+WGO,Winnebago Industries Inc.,23.39,23.82,Ipervenduto (RSI ≤ 30) 🟢,29.15,In Declino 🔴,35.03,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SXTC,China SXT Pharmaceuticals Inc.,0.15,27.83,Ipervenduto (RSI ≤ 30) 🟢,198.15,In Declino 🔴,6865.96,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ANGI,ANGI Homeservices Inc,6.59,73.91,Ipercomprato (RSI ≥ 70) 🔴,5.63,In Crescita 🟢,10.17,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+DXLG,Destination XL Group Inc,0.39,28.09,Ipervenduto (RSI ≤ 30) 🟢,0.58,In Declino 🔴,0.99,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+PD,PagerDuty Inc,16.16,70.65,Ipercomprato (RSI ≥ 70) 🔴,12.58,In Crescita 🟢,12.59,In Crescita 🟢,SMA 40 SOTTO SMA 200 🔴
+NAK,Northern Dynasty Minerals Ltd,1.12,27.16,Ipervenduto (RSI ≤ 30) 🟢,1.55,In Declino 🔴,1.5,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+OBDC,Blue Owl Capital Corporation,10.11,27.6,Ipervenduto (RSI ≤ 30) 🟢,11.0,In Declino 🔴,12.3,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+HTO,H2O America,58.48,28.67,Ipervenduto (RSI ≤ 30) 🟢,61.28,In Declino 🔴,56.22,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+GBX,The Greenbrier Companies Inc,38.43,22.54,Ipervenduto (RSI ≤ 30) 🟢,44.77,In Declino 🔴,49.12,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GPCR,Structure Therapeutics Inc,25.54,14.42,Ipervenduto (RSI ≤ 30) 🟢,41.86,In Declino 🔴,41.82,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+WAFD,WaFd Inc,29.43,26.79,Ipervenduto (RSI ≤ 30) 🟢,34.06,In Declino 🔴,33.13,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+ROCK,Gibraltar Industries Inc,36.66,29.13,Ipervenduto (RSI ≤ 30) 🟢,43.07,In Declino 🔴,50.03,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+EFC,Ellington Financial Inc,11.66,26.72,Ipervenduto (RSI ≤ 30) 🟢,12.87,In Declino 🔴,13.04,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AEG,Aegon Ltd,8.24,22.26,Ipervenduto (RSI ≤ 30) 🟢,8.81,In Declino 🔴,7.89,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+EVLO,Evelo Biosciences Inc,0.0,99.37,Ipercomprato (RSI ≥ 70) 🔴,0.0,In Crescita 🟢,0.0,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ACRE,Ares Commercial Real Estate Corporation,3.55,20.68,Ipervenduto (RSI ≤ 30) 🟢,4.4,In Declino 🔴,4.86,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CNDA,Concord Acquisition Corp II,12.5,100.0,Ipercomprato (RSI ≥ 70) 🔴,12.15,In Crescita 🟢,11.49,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BWMN,Bowman Consulting Group Ltd,42.7,75.81,Ipercomprato (RSI ≥ 70) 🔴,38.21,In Crescita 🟢,33.0,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+SAR,Saratoga Investment Corp,15.03,22.18,Ipervenduto (RSI ≤ 30) 🟢,18.54,In Declino 🔴,21.87,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+PKE,Park Aerospace Corp,26.38,25.71,Ipervenduto (RSI ≤ 30) 🟢,32.0,In Declino 🔴,25.84,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+MEC,Mayville Engineering Company Inc,15.11,29.57,Ipervenduto (RSI ≤ 30) 🟢,21.56,In Declino 🔴,20.46,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+UCT2.DE,Lyxor US Curve Steepening 2-10 UCITS ETF,89.75,74.33,Ipercomprato (RSI ≥ 70) 🔴,86.35,In Crescita 🟢,86.35,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+LYEL,Lyell Immunopharma Inc,8.71,24.69,Ipervenduto (RSI ≤ 30) 🟢,12.96,In Declino 🔴,16.19,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MRP,Millrose Properties Inc,22.36,19.63,Ipervenduto (RSI ≤ 30) 🟢,28.16,In Declino 🔴,28.97,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+VOS.DE,Vossloh AG,49.4,29.37,Ipervenduto (RSI ≤ 30) 🟢,58.77,In Declino 🔴,66.66,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NOL.OL,Northern Ocean Ltd,6.62,27.31,Ipervenduto (RSI ≤ 30) 🟢,7.51,In Declino 🔴,7.63,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NKR.OL,Nekkar Asa,16.0,74.09,Ipercomprato (RSI ≥ 70) 🔴,14.49,In Crescita 🟢,12.86,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+THEP.PA,Thermador Groupe SA,65.0,24.87,Ipervenduto (RSI ≤ 30) 🟢,72.57,In Declino 🔴,73.09,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+WAGA.PA,Waga Energy SA,21.8,27.74,Ipervenduto (RSI ≤ 30) 🟢,23.0,In Declino 🔴,21.37,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+FMONC.PA,Financiere Moncey SA,103.0,29.37,Ipervenduto (RSI ≤ 30) 🟢,120.5,In Declino 🔴,125.39,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+IPH.PA,Innate Pharma SA,1.27,23.07,Ipervenduto (RSI ≤ 30) 🟢,1.57,In Declino 🔴,1.61,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ALDLT.PA,Delta Plus Group SA,23.2,14.15,Ipervenduto (RSI ≤ 30) 🟢,32.6,In Declino 🔴,42.97,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+LBIRD.PA,Lumibird SA,21.9,27.06,Ipervenduto (RSI ≤ 30) 🟢,25.06,In Declino 🔴,20.79,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BIG.PA,Bigben Interactive SA,0.07,14.39,Ipervenduto (RSI ≤ 30) 🟢,0.2,In Declino 🔴,0.67,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CAF.PA,Caiss Regio Credi Agric Mutuel Paris Idf,86.77,19.11,Ipervenduto (RSI ≤ 30) 🟢,108.47,In Declino 🔴,102.4,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+BOI.PA,Boiron SA,17.7,14.03,Ipervenduto (RSI ≤ 30) 🟢,24.42,In Declino 🔴,26.3,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MBWS.PA,Marie Brizard Wine and Spirits SA,2.61,25.44,Ipervenduto (RSI ≤ 30) 🟢,2.83,In Declino 🔴,2.97,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ALDRV.PA,Drone Volt SA,0.26,25.07,Ipervenduto (RSI ≤ 30) 🟢,0.36,In Declino 🔴,0.5,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ALHOP.PA,Hopscotch Groupe SA,12.05,18.18,Ipervenduto (RSI ≤ 30) 🟢,14.24,In Declino 🔴,15.1,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CCN.PA,Caisse Regionale de Credit Agricole Mutuel de Normandie Seine SC,134.0,17.63,Ipervenduto (RSI ≤ 30) 🟢,155.54,In Declino 🔴,136.52,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+ALMRB.PA,MR Bricolage SA,2.9,28.33,Ipervenduto (RSI ≤ 30) 🟢,3.7,In Declino 🔴,5.37,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+TTALO.HE,Terveystalo Oyj,6.98,24.3,Ipervenduto (RSI ≤ 30) 🟢,7.66,In Declino 🔴,9.05,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+KEMPOWR.HE,Kempower Oyj,8.55,20.29,Ipervenduto (RSI ≤ 30) 🟢,10.62,In Declino 🔴,12.45,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+EQV1V.HE,eQ Oyj,8.32,26.45,Ipervenduto (RSI ≤ 30) 🟢,9.15,In Declino 🔴,10.44,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+RELAIS.HE,Relais Group Oyj,12.75,28.51,Ipervenduto (RSI ≤ 30) 🟢,14.23,In Declino 🔴,14.88,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FSECURE.HE,F Secure Oyj,1.43,14.8,Ipervenduto (RSI ≤ 30) 🟢,1.85,In Declino 🔴,1.83,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+ADMCM.HE,Admicom Oyj,30.2,70.18,Ipercomprato (RSI ≥ 70) 🔴,27.29,In Crescita 🟢,36.68,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ORIOLA.HE,Oriola Oyj,0.74,18.57,Ipervenduto (RSI ≤ 30) 🟢,0.89,In Declino 🔴,0.99,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+HUSCO.CO,HusCompagniet AS,26.0,25.45,Ipervenduto (RSI ≤ 30) 🟢,30.93,In Declino 🔴,39.19,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+YCSH.DE,iShares EUR Cash UCITS ETF,15.64,85.07,Ipercomprato (RSI ≥ 70) 🔴,15.58,In Crescita 🟢,15.41,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+SP5C.PA,Amundi S&P 500 II UCITS ETF Acc,505.46,71.43,Ipercomprato (RSI ≥ 70) 🔴,495.29,In Crescita 🟢,481.8,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+GLIBK,GCI Liberty Inc,20.05,20.36,Ipervenduto (RSI ≤ 30) 🟢,24.81,In Declino 🔴,30.89,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GLIBA,Liberty Capital Corp,20.08,20.15,Ipervenduto (RSI ≤ 30) 🟢,25.02,In Declino 🔴,31.06,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ELVR,Sayona Mining Ltd,33.61,18.5,Ipervenduto (RSI ≤ 30) 🟢,54.41,In Declino 🔴,53.05,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+NTSK,"Netskope, Inc",20.75,73.5,Ipercomprato (RSI ≥ 70) 🔴,15.18,In Crescita 🟢,15.04,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+FRMI,Fermi Inc,3.43,27.22,Ipervenduto (RSI ≤ 30) 🟢,5.61,In Declino 🔴,9.82,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+RCAT,Red Cat Holdings Inc,5.77,25.31,Ipervenduto (RSI ≤ 30) 🟢,8.4,In Declino 🔴,9.52,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FFAI,Faraday Future Intelligent Electric Inc,1.1,24.2,Ipervenduto (RSI ≤ 30) 🟢,13.7,In Declino 🔴,111.0,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ATYR,aTyr Pharma Inc,0.25,20.43,Ipervenduto (RSI ≤ 30) 🟢,0.46,In Declino 🔴,1.51,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AEXA,American Exceptionalism Acquisition Corp A,10.85,24.55,Ipervenduto (RSI ≤ 30) 🟢,11.32,In Declino 🔴,11.31,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+UUUU,Energy Fuels Inc,9.96,29.44,Ipervenduto (RSI ≤ 30) 🟢,13.41,In Declino 🔴,13.65,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SARO,StandardAero Inc,20.17,22.85,Ipervenduto (RSI ≤ 30) 🟢,24.76,In Declino 🔴,27.03,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+UAMY,United States Antimony Corporation,3.68,27.74,Ipervenduto (RSI ≤ 30) 🟢,5.53,In Declino 🔴,5.92,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CP9U.PA,Amundi MSCI Pacific Ex Japan SRI Climate Paris Aligned UCITS ETF,739.6,28.12,Ipervenduto (RSI ≤ 30) 🟢,766.02,In Declino 🔴,743.08,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+FDD,First Trust STOXX European Select Dividend Idx Fd,18.62,28.23,Ipervenduto (RSI ≤ 30) 🟢,19.65,In Declino 🔴,17.47,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+MEGA.DE,Amundi MSCI USA Mega Cap UCITS ETF Acc,12.74,74.64,Ipercomprato (RSI ≥ 70) 🔴,11.91,In Crescita 🟢,10.67,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+GJAJ.PA,Groupe JAJ,1.25,29.67,Ipervenduto (RSI ≤ 30) 🟢,1.22,In Crescita 🟢,1.16,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+AKOM.PA,Aerkomm Inc,2.8,,Ipercomprato (RSI ≥ 70) 🔴,2.8,In Crescita 🟢,2.8,In Crescita 🟢,SMA 40 SOTTO SMA 200 🔴
+BESQAB.ST,Besqab AB,23.6,25.07,Ipervenduto (RSI ≤ 30) 🟢,26.69,In Declino 🔴,25.75,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+SOTK,Sono-Tek Corp,7.08,79.07,Ipercomprato (RSI ≥ 70) 🔴,5.27,In Crescita 🟢,4.56,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+SLNH,Soluna Holdings Inc,0.9,28.46,Ipervenduto (RSI ≤ 30) 🟢,1.21,In Declino 🔴,1.43,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+UZX,Linkage Global Inc,1.13,22.46,Ipervenduto (RSI ≤ 30) 🟢,5.35,In Declino 🔴,28.82,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CVV,CVD Equipment Corp,4.18,27.1,Ipervenduto (RSI ≤ 30) 🟢,5.83,In Declino 🔴,4.86,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+HCAI,Huachen AI Parking Management Technology Holding C,0.47,13.99,Ipervenduto (RSI ≤ 30) 🟢,3.84,In Declino 🔴,36.08,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ONCY,Oncolytics Biotech Inc,0.56,23.42,Ipervenduto (RSI ≤ 30) 🟢,0.78,In Declino 🔴,0.89,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CTSO,CytoSorbents Corp,3.79,25.94,Ipervenduto (RSI ≤ 30) 🟢,6.73,In Declino 🔴,12.79,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+STXS,Stereotaxis Inc,1.11,25.94,Ipervenduto (RSI ≤ 30) 🟢,1.43,In Declino 🔴,1.95,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+TCRT,Alaunos Therapeutics Inc,0.79,29.05,Ipervenduto (RSI ≤ 30) 🟢,1.64,In Declino 🔴,2.37,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CLRB,Cellectar Biosciences Inc,1.45,18.56,Ipervenduto (RSI ≤ 30) 🟢,2.33,In Declino 🔴,6.4,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NOA,North American Construction Group Ltd,11.8,29.41,Ipervenduto (RSI ≤ 30) 🟢,13.21,In Declino 🔴,14.83,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SOBR,Sobr Safe Inc,0.06,25.47,Ipervenduto (RSI ≤ 30) 🟢,0.46,In Declino 🔴,4.85,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+TAOP,Taoping Inc,0.42,29.58,Ipervenduto (RSI ≤ 30) 🟢,0.84,In Declino 🔴,3.03,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SCNX,Scienture Holdings Inc,3.76,16.46,Ipervenduto (RSI ≤ 30) 🟢,8.37,In Declino 🔴,29.06,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+KSCP,Knightscope Inc,0.62,14.55,Ipervenduto (RSI ≤ 30) 🟢,1.49,In Declino 🔴,4.33,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GRDX,GridAI Technologies Corp,4.97,71.09,Ipercomprato (RSI ≥ 70) 🔴,3.66,In Crescita 🟢,3.04,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+FRGT,Freight Technologies Inc,0.29,27.31,Ipervenduto (RSI ≤ 30) 🟢,2.01,In Declino 🔴,33.03,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SLI,Standard Lithium Ltd,1.58,22.77,Ipervenduto (RSI ≤ 30) 🟢,2.39,In Declino 🔴,2.92,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+BIOA,BioAge Labs Inc,6.34,25.74,Ipervenduto (RSI ≤ 30) 🟢,11.74,In Declino 🔴,12.71,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GPUS,Hyperscale Data Inc,0.16,25.02,Ipervenduto (RSI ≤ 30) 🟢,0.43,In Declino 🔴,5.38,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SEGG,Sports Entertainment Gaming Gl,1.6,27.31,Ipervenduto (RSI ≤ 30) 🟢,4.0,In Declino 🔴,20.89,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FLZH,Flash Sports & Media Holdings Inc,0.08,28.23,Ipervenduto (RSI ≤ 30) 🟢,1.33,In Declino 🔴,8.16,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AMST,Amesite Inc,0.88,27.21,Ipervenduto (RSI ≤ 30) 🟢,1.09,In Declino 🔴,1.9,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SGRX,Sangrix Inc,0.74,21.91,Ipervenduto (RSI ≤ 30) 🟢,4.45,In Declino 🔴,66.39,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+LSF,Laird Superfood Inc,2.92,26.78,Ipervenduto (RSI ≤ 30) 🟢,3.77,In Declino 🔴,4.4,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+PASG,Passage Bio Inc,3.69,24.76,Ipervenduto (RSI ≤ 30) 🟢,4.87,In Declino 🔴,7.37,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ADCT,ADC Therapeutics SA,1.73,74.87,Ipercomprato (RSI ≥ 70) 🔴,1.46,In Declino 🔴,2.5,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MNTS,Momentus Inc,3.27,29.73,Ipervenduto (RSI ≤ 30) 🟢,4.98,In Declino 🔴,23.22,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+VEL,Velocity Financial Inc,14.73,26.99,Ipervenduto (RSI ≤ 30) 🟢,16.97,In Declino 🔴,18.13,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+BGM,BGM Group Ltd,10.75,73.38,Ipercomprato (RSI ≥ 70) 🔴,11.24,In Declino 🔴,116.29,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MXCT,MaxCyte Inc,1.01,29.53,Ipervenduto (RSI ≤ 30) 🟢,1.17,In Declino 🔴,1.64,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ADTX,Aditxt Inc,0.0,19.51,Ipervenduto (RSI ≤ 30) 🟢,114.71,In Declino 🔴,233871.27,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FTHM,Fathom Holdings Inc,0.21,18.25,Ipervenduto (RSI ≤ 30) 🟢,0.63,In Declino 🔴,1.03,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NCDL,Nuveen Churchill Direct Lending Corp,10.81,25.5,Ipervenduto (RSI ≤ 30) 🟢,12.19,In Declino 🔴,13.94,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ECO,Okeanis Eco Tankers Corp,93.11,73.69,Ipercomprato (RSI ≥ 70) 🔴,69.48,In Crescita 🟢,46.5,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+UCL,Ucloudlink Group Inc,0.27,24.31,Ipervenduto (RSI ≤ 30) 🟢,0.6,In Declino 🔴,1.29,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+DDI,DoubleDown Interactive Co Ltd,13.65,72.58,Ipercomprato (RSI ≥ 70) 🔴,12.35,In Crescita 🟢,10.8,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+ZSQR,Z Squared Inc,5.66,73.29,Ipercomprato (RSI ≥ 70) 🔴,5.44,In Declino 🔴,9.42,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+IMA,ImageneBio Inc,4.24,25.34,Ipervenduto (RSI ≤ 30) 🟢,5.24,In Declino 🔴,8.7,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NBTX,Nanobiotix SA,23.68,25.12,Ipervenduto (RSI ≤ 30) 🟢,35.22,In Declino 🔴,25.29,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+MRM,MEDIROM Healthcare Technologies Inc,0.55,22.8,Ipervenduto (RSI ≤ 30) 🟢,0.88,In Declino 🔴,1.3,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+EDBL,Edible Garden AG Inc,1.07,22.57,Ipervenduto (RSI ≤ 30) 🟢,12.19,In Declino 🔴,523.17,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ALTI,AlTi Global Inc,2.61,26.04,Ipervenduto (RSI ≤ 30) 🟢,3.42,In Declino 🔴,3.76,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SMTK,SmartKem Inc,1.15,22.76,Ipervenduto (RSI ≤ 30) 🟢,6.42,In Declino 🔴,47.42,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+VIP,Vulcan Infrastructure and Power Inc,1.41,29.05,Ipervenduto (RSI ≤ 30) 🟢,1.73,In Declino 🔴,1.59,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+FOA,Finance Of America Cos Inc,12.82,28.16,Ipervenduto (RSI ≤ 30) 🟢,17.93,In Declino 🔴,20.86,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+KITT,Nauticus Robotics Inc,1.48,19.17,Ipervenduto (RSI ≤ 30) 🟢,6.59,In Declino 🔴,151.25,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SHFS,SHF Holdings Inc,0.43,19.71,Ipervenduto (RSI ≤ 30) 🟢,2.72,In Declino 🔴,23.62,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ADUR,Aduro Clean Technologies Inc,11.11,26.3,Ipervenduto (RSI ≤ 30) 🟢,13.47,In Declino 🔴,11.73,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+AVBP,ArriVent Biopharma Inc,16.73,23.37,Ipervenduto (RSI ≤ 30) 🟢,28.46,In Declino 🔴,25.99,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+BZAI,Blaize Holdings Inc,0.29,26.63,Ipervenduto (RSI ≤ 30) 🟢,0.79,In Declino 🔴,2.61,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ARBK,Argo Blockchain PLC,2.1,26.27,Ipervenduto (RSI ≤ 30) 🟢,3.18,In Declino 🔴,39.15,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+BRLT,Brilliant Earth Group Inc,1.58,70.7,Ipercomprato (RSI ≥ 70) 🔴,1.33,In Crescita 🟢,1.52,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CYN,CYNGN Inc,0.52,23.91,Ipervenduto (RSI ≤ 30) 🟢,1.02,In Declino 🔴,42.71,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+NMRA,Neumora Therapeutics Inc,0.48,20.74,Ipervenduto (RSI ≤ 30) 🟢,1.23,In Declino 🔴,2.34,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MTEK,MARIS - TECH LTD,0.58,19.91,Ipervenduto (RSI ≤ 30) 🟢,1.04,In Declino 🔴,1.66,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+DTI,Drilling Tools International Corp,2.05,29.07,Ipervenduto (RSI ≤ 30) 🟢,2.48,In Declino 🔴,2.76,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AKAN,Akanda Corp,1.76,25.35,Ipervenduto (RSI ≤ 30) 🟢,6.11,In Declino 🔴,36.0,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AMZE,Amaze Holdings Inc,0.01,16.32,Ipervenduto (RSI ≤ 30) 🟢,0.48,In Declino 🔴,25.42,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SIDU,Sidus Space Inc,1.55,27.63,Ipervenduto (RSI ≤ 30) 🟢,2.26,In Declino 🔴,2.33,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AIRJ,AirJoule Technologies Corp,3.61,28.73,Ipervenduto (RSI ≤ 30) 🟢,4.36,In Declino 🔴,4.66,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GTEN,Gores Holdings X Inc,10.42,18.2,Ipervenduto (RSI ≤ 30) 🟢,10.51,In Declino 🔴,10.37,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+ADSE,Ads-Tec Energy PLC,9.66,28.78,Ipervenduto (RSI ≤ 30) 🟢,11.27,In Declino 🔴,11.87,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+HLP,Hongli Group Inc,2.54,76.86,Ipercomprato (RSI ≥ 70) 🔴,1.57,In Crescita 🟢,1.17,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+VSTD,Vestand Inc,0.0,21.73,Ipervenduto (RSI ≤ 30) 🟢,0.09,In Declino 🔴,0.82,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SVRE,SaverOne 2014 Ltd,1.15,26.84,Ipervenduto (RSI ≤ 30) 🟢,2.77,In Declino 🔴,68.82,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+LCFY,Locafy Ltd,1.74,29.8,Ipervenduto (RSI ≤ 30) 🟢,2.68,In Declino 🔴,4.03,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ONFO,Onfolio Holdings Inc,0.71,26.05,Ipervenduto (RSI ≤ 30) 🟢,7.35,In Declino 🔴,33.0,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MEGL,Magic Empire Global Ltd,0.67,14.75,Ipervenduto (RSI ≤ 30) 🟢,1.11,In Declino 🔴,1.16,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AFRI,Forafric Global PLC,12.72,77.9,Ipercomprato (RSI ≥ 70) 🔴,10.88,In Crescita 🟢,9.93,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+HTCO,High-Trend International Group,1.29,23.84,Ipervenduto (RSI ≤ 30) 🟢,3.2,In Declino 🔴,13.24,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+CNCK,Coincheck Group NV,1.35,23.18,Ipervenduto (RSI ≤ 30) 🟢,1.93,In Declino 🔴,3.65,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+DCX,Digital Currency X Technology Inc,2.73,19.74,Ipervenduto (RSI ≤ 30) 🟢,497.46,In Declino 🔴,92599.85,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MLEC,Moolec Science SA,2.2,17.44,Ipervenduto (RSI ≤ 30) 🟢,6.55,In Declino 🔴,31.65,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SBC,SBC Medical Group Holdings Inc,5.42,72.01,Ipercomprato (RSI ≥ 70) 🔴,4.15,In Crescita 🟢,4.11,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+GXAI,Gaxos.ai Inc,0.43,22.98,Ipervenduto (RSI ≤ 30) 🟢,0.81,In Declino 🔴,1.22,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+VCIG,VCI Global Ltd,0.51,24.52,Ipervenduto (RSI ≤ 30) 🟢,107.4,In Declino 🔴,140061.61,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+MDBH,MDB Capital Holdings LLC,2.05,27.7,Ipervenduto (RSI ≤ 30) 🟢,2.83,In Declino 🔴,3.74,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ABLV,Able View Global Inc,2.39,70.11,Ipercomprato (RSI ≥ 70) 🔴,1.24,In Crescita 🟢,0.97,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+LGCL,Lucas GC Ltd,2.23,26.5,Ipervenduto (RSI ≤ 30) 🟢,78.89,In Declino 🔴,1012.19,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ZKH,ZKH Group Ltd,2.03,17.36,Ipervenduto (RSI ≤ 30) 🟢,2.8,In Declino 🔴,3.06,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+SRBK,SR Bancorp Inc,17.94,28.11,Ipervenduto (RSI ≤ 30) 🟢,19.15,In Declino 🔴,16.67,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+CTNT,Cheetah Net Supply Chain Service Inc,2.64,11.29,Ipervenduto (RSI ≤ 30) 🟢,2013.16,In Declino 🔴,27669.22,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AXG,Solowin Holdings,0.08,8.99,Ipervenduto (RSI ≤ 30) 🟢,2.05,In Declino 🔴,2.84,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+FER,Ferrovial NV,50.15,23.01,Ipervenduto (RSI ≤ 30) 🟢,59.68,In Declino 🔴,59.63,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+ELAB,PMGC Holdings Inc,3.08,24.56,Ipervenduto (RSI ≤ 30) 🟢,19.22,In Declino 🔴,3758.96,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+LPAA,Launch One Acquisition Corp,10.85,78.1,Ipercomprato (RSI ≥ 70) 🔴,10.79,In Crescita 🟢,10.6,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+MGN,Megan Holdings Ltd,3.67,25.29,Ipervenduto (RSI ≤ 30) 🟢,171.82,In Declino 🔴,1287.85,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+AVR,Anteris Technologies Global Corp,6.77,29.03,Ipervenduto (RSI ≤ 30) 🟢,8.16,In Declino 🔴,6.57,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BXBL,BOXABL Inc,3.2,28.33,Ipervenduto (RSI ≤ 30) 🟢,5.43,In Declino 🔴,8.53,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+RANG,Range Capital Acquisition Corp,10.88,90.35,Ipercomprato (RSI ≥ 70) 🔴,10.76,In Crescita 🟢,10.5,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+NEUP,Neuphoria Therapeutics Inc,3.36,20.9,Ipervenduto (RSI ≤ 30) 🟢,3.85,In Declino 🔴,4.93,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ARAI,Arrive AI Inc,0.15,26.27,Ipervenduto (RSI ≤ 30) 🟢,0.35,In Declino 🔴,2.61,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+PGAC,Pantages Capital Acquisition Corp,10.77,72.61,Ipercomprato (RSI ≥ 70) 🔴,10.69,In Crescita 🟢,10.44,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+GMHS,Gamehaus Holdings Inc,0.59,29.71,Ipervenduto (RSI ≤ 30) 🟢,0.78,In Declino 🔴,1.86,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ONEN,ONE Nuclear Energy Inc,1.71,26.89,Ipervenduto (RSI ≤ 30) 🟢,7.77,In Declino 🔴,9.66,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+TVAI,Thayer Ventures Acquisition Corp II,10.41,73.01,Ipercomprato (RSI ≥ 70) 🔴,10.36,In Crescita 🟢,10.21,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BMHL,Bluemount Holdings Ltd,3.55,20.89,Ipervenduto (RSI ≤ 30) 🟢,5.2,In Declino 🔴,4.36,In Declino 🔴,SMA 40 SOPRA SMA 200 🟢
+LCCC,Lakeshore Acquisition III Corp,10.54,74.27,Ipercomprato (RSI ≥ 70) 🔴,10.48,In Crescita 🟢,10.29,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+BLUW,Blue Water Acquisition Corp III,10.39,70.86,Ipercomprato (RSI ≥ 70) 🔴,10.35,In Crescita 🟢,10.24,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+EGHA,EGH Acquisition Corp,10.43,85.94,Ipercomprato (RSI ≥ 70) 🔴,10.37,In Crescita 🟢,10.22,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+GTERA,Globa Terra Acquisition Corp,10.5,82.29,Ipercomprato (RSI ≥ 70) 🔴,10.39,In Crescita 🟢,10.2,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
+XLAB,Exascale Labs Holdings Inc,0.97,16.75,Ipervenduto (RSI ≤ 30) 🟢,5.18,In Declino 🔴,8.69,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+GIBO,GIBO Holdings Ltd,62.27,88.57,Ipercomprato (RSI ≥ 70) 🔴,42.64,In Crescita 🟢,9511.47,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+YMT,Yimutian Inc,0.99,23.35,Ipervenduto (RSI ≤ 30) 🟢,13.65,In Declino 🔴,182.43,In Declino 🔴,SMA 40 SOTTO SMA 200 🔴
+ONCH,1RT Acquisition Corp,10.35,75.69,Ipercomprato (RSI ≥ 70) 🔴,10.3,In Crescita 🟢,10.26,In Crescita 🟢,SMA 40 SOPRA SMA 200 🟢
